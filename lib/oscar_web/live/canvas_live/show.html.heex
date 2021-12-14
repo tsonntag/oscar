@@ -1,0 +1,16 @@
+<h1>Show Canvas</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.canvas_show_path(@socket, :show, @canvas)}>
+    <.live_component
+      module={OscarWeb.CanvasLive.FormComponent}
+      id={@canvas.id}
+      title={@page_title}
+      action={@live_action}
+      canvas={@canvas}
+      return_to={Routes.canvas_show_path(@socket, :show, @canvas)}
+    />
+  </.modal>
+<% end %>
+
+<%= live_component @socket, OscarWeb.CanvasLive.ShowComponent, canvas: @canvas %>

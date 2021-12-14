@@ -69,7 +69,7 @@ defmodule Oscar.Canvas do
 
   """
   def create(%{"name" =>  name, "width" =>  width, "height" => height} = params) do
-    fill = Map.get(params, :fill, " ")
+    fill = Map.get(params, "fill", " ")
     fill = if String.length(fill) == 1, do: fill, else: " "
 
     content = Board.new(to_integer(width), to_integer(height), fill)
@@ -79,6 +79,7 @@ defmodule Oscar.Canvas do
     %Canvas{}
     |> Canvas.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:canvas_created)
   end
 
 
@@ -109,15 +110,11 @@ defmodule Oscar.Canvas do
   iex> add_flood(canvas, %{"x" => x, y; y, "fill" => fill})
   {:ok, %Canvas{}}
   """
-  def add_flood(%Canvas{content: content} = canvas, %{"x" => x, "y" => y, "fill" => fill} = attrs) do
+  def add_flood(%Canvas{content: content} = canvas, %{"x" => x, "y" => y, "fill" => fill} ) do
     content = content
-    |> IO.inspect
     |> Board.from_string()
-    |> IO.inspect
     |> Board.add_flood({to_integer(x), to_integer(y)}, fill)
-    |> IO.inspect
     |> Board.to_string()
-    |> IO.inspect
 
     attrs = %{ content: content}
     canvas
@@ -140,6 +137,7 @@ defmodule Oscar.Canvas do
     canvas
     |> Canvas.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:canvas_updated)
   end
 
   @doc """
@@ -171,4 +169,14 @@ defmodule Oscar.Canvas do
     Canvas.changeset(canvas, attrs)
   end
 
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Oscar.PubSub, "canvases")
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
+  defp broadcast({:ok, canvas}, event) do
+    Phoenix.PubSub.broadcast(Oscar.PubSub, "canvases", {event, canvas})
+    {:ok, canvas}
+  end
 end

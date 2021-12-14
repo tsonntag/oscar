@@ -11,7 +11,6 @@ defmodule OscarWeb.CanvasController do
   end
 
   def create(conn, %{"canvas" => canvas_params}) do
-    IO.inspect canvas_params
     with {:ok, %Canvas{} = canvas} <- Canvas.create(canvas_params) do
       conn
       |> put_status(:created)

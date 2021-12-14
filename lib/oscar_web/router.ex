@@ -20,6 +20,17 @@ defmodule OscarWeb.Router do
     resources "/canvas", PageController, only: [:index, :show]
   end
 
+  scope "/live", OscarWeb do
+    pipe_through :browser
+
+    live "/canvas", CanvasLive.Index, :index
+    live "/canvas/new", CanvasLive.Index, :new
+    live "/canvas/:id/edit", CanvasLive.Index, :edit
+
+    live "/canvas/:id", CanvasLive.Show, :show
+    live "/canvas/:id/show/edit", CanvasLive.Show, :edit
+  end
+
   scope "/api", OscarWeb do
      pipe_through :api
      resources "/canvas", CanvasController, except: [:new, :edit]
