@@ -12,7 +12,7 @@ defmodule Oscar.Field do
     for x <- (x0..x0 + xlen - 1), y <- (y0..y0 + ylen - 1) do
       {x,y}
     end
-    |> Enum.reduce(field, fn p, f -> add_point(f, p, c) end)
+    |> Enum.reduce(field, fn p, f -> set_char(f, p, c) end)
   end
 
   def add_rect(%Field{} = field, _corner, _size, nil = _outline, nil = _fill)  do
@@ -42,7 +42,7 @@ defmodule Oscar.Field do
     |> matching_neighbours(point, match_char)
     |> Enum.reduce(field, fn neighbour, f ->
       f
-      |> add_point(neighbour, fill)
+      |> set_char(neighbour, fill)
       |> do_add_flood(neighbour, match_char, fill)
     end)
   end
@@ -79,7 +79,7 @@ defmodule Oscar.Field do
     neighbours(point) |> Enum.filter(fn p -> has_point?(size, p) && match_char == get_char(field, p) end)
   end
 
-  defp add_point(%Field{} = field, {x,y}, c) do
+  defp set_char(%Field{} = field, {x,y}, c) do
     deep_merge(field, %{ chars: %{x => %{ y => c}}})
   end
  
