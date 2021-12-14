@@ -8,8 +8,8 @@ defmodule Oscar.Field do
     %Field{size: {width, height}, chars: %{}}
   end
 
-  def add_rect(%Field{} = field, {x0, y0}, { xlen, ylen}, c) when is_binary(c) do
-    for x <- (x0..x0 + xlen - 1), y <- (y0..y0 + ylen - 1) do
+  def add_rect(%Field{} = field, {x, y}, { width, height}, c) when is_binary(c) do
+    for x <- (x..x + width - 1), y <- (y..y + height - 1) do
       {x,y}
     end
     |> Enum.reduce(field, fn p, f -> set_char(f, p, c) end)
@@ -23,10 +23,10 @@ defmodule Oscar.Field do
     add_rect(field, corner, size, fill)
   end
 
-  def add_rect(%Field{} = field, {x0, y0} = corner, {xlen, ylen} = size, outline, fill) when is_binary(fill) and xlen > 2 and ylen > 2 do
+  def add_rect(%Field{} = field, {x, y} = corner, {width, height} = size, outline, fill) when is_binary(fill) and width > 2 and height > 2 do
     field
     |> add_outline(corner, size, outline)
-    |> add_rect({x0 + 1, y0 + 1}, {xlen - 2, ylen - 2}, fill)
+    |> add_rect({x + 1, y + 1}, {width - 2, height - 2}, fill)
   end
 
   def add_rect(%Field{} = field, corner, size, outline, _fill)  do
@@ -47,24 +47,24 @@ defmodule Oscar.Field do
     end)
   end
 
-  defp add_outline(%Field{} = field, {x0,y0}, {xlen, ylen}, c)  do
+  defp add_outline(%Field{} = field, {x,y}, {width, height}, c)  do
     field
-    |> add_rect({ x0,            y0            }, { xlen, 1        }, c)
-    |> add_rect({ x0,            y0 + ylen - 1 }, { xlen, 1        }, c)
-    |> add_rect({ x0,            y0 + 1        }, { 1,    ylen - 1 }, c)
-    |> add_rect({ x0 + xlen - 1, y0 + 1        }, { 1,    ylen - 1 }, c)
+    |> add_rect({ x,             y              }, { width, 1          }, c)
+    |> add_rect({ x,             y + height - 1 }, { width, 1          }, c)
+    |> add_rect({ x,             y + 1          }, { 1,     height - 1 }, c)
+    |> add_rect({ x + width - 1, y + 1          }, { 1,     height - 1 }, c)
   end
 
-  def to_array(%Field{size: {xlen, ylen}} = field, default \\ nil) do
-    for y <- (0..ylen - 1) do
-      for x <- (0..xlen - 1) do
+  def to_array(%Field{size: {width, height}} = field, default \\ nil) do
+    for y <- (0..height - 1) do
+      for x <- (0..width - 1) do
         get_char(field, {x, y}, default)
       end
     end
   end
 
-  defp has_point?({xlen, ylen}, {x,y} ) do
-    Enum.member?((0..xlen-1), x) && Enum.member?((0..ylen-1), y)
+  defp has_point?({width, height}, {x,y} ) do
+    Enum.member?((0..width-1), x) && Enum.member?((0..height-1), y)
   end
 
   defp get_char(%Field{chars: chars}, {x,y}, default \\ nil) do

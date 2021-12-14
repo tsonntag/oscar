@@ -1,19 +1,17 @@
 defmodule OscarWeb.CanvasControllerTest do
   use OscarWeb.ConnCase
 
-  import Oscar.CanvasFixtures
+  import Oscar.ContextFixtures
 
-  alias Oscar.Canvas.Canvas
+  alias Oscar.Context.Canvas
 
   @create_attrs %{
-    content: "some content",
     name: "some name"
   }
   @update_attrs %{
-    content: "some updated content",
     name: "some updated name"
   }
-  @invalid_attrs %{content: nil, name: nil}
+  @invalid_attrs %{name: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -35,7 +33,6 @@ defmodule OscarWeb.CanvasControllerTest do
 
       assert %{
                "id" => ^id,
-               "content" => "some content",
                "name" => "some name"
              } = json_response(conn, 200)["data"]
     end
@@ -57,7 +54,6 @@ defmodule OscarWeb.CanvasControllerTest do
 
       assert %{
                "id" => ^id,
-               "content" => "some updated content",
                "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end

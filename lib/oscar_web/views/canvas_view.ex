@@ -1,6 +1,7 @@
 defmodule OscarWeb.CanvasView do
   use OscarWeb, :view
   alias OscarWeb.CanvasView
+  alias Oscar.Canvas
 
   def render("index.json", %{canvases: canvases}) do
     %{data: render_many(canvases, CanvasView, "canvas.json")}

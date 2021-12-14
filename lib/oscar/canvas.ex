@@ -2,7 +2,9 @@ defmodule Oscar.Canvas do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query, warn: false
-  alias Oscar.{Repo, Canvas}
+  alias Oscar.{Repo, Canvas, Board}
+
+  import String, only: [to_integer: 1]
 
 
   schema "canvases" do
@@ -12,11 +14,15 @@ defmodule Oscar.Canvas do
     timestamps()
   end
 
+  def board(%Canvas{content: content}), do: Board.from_string(content)
+
+  def size(canvas), do: canvas |> board() |> Board.size()
+
   @doc false
   def changeset(canvas, attrs) do
     canvas
     |> cast(attrs, [:name, :content])
-    |> validate_required([:name, :content])
+    |> validate_required([:name])
   end
 
 
@@ -31,7 +37,7 @@ defmodule Oscar.Canvas do
 
   """
   def list do
-    Repo.all(Canvas)
+    Repo.all(Canvas) |> IO.inspect
   end
 
   @doc """
@@ -51,21 +57,71 @@ defmodule Oscar.Canvas do
   def get!(id), do: Repo.get!(Canvas, id)
 
   @doc """
-  Creates a canvas.
+  Creates a canvas with name, width, height and an optional fill character.
 
   ## Examples
 
-      iex> create(%{field: value})
+      iex> create_rect(canvas, %{"name" =>  name, "width" =>  width, height; height, "fill" => fill})
       {:ok, %Canvas{}}
 
       iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create(attrs \\ %{}) do
+  def create(%{"name" =>  name, "width" =>  width, "height" => height} = params) do
+    fill = Map.get(params, :fill, " ")
+    fill = if String.length(fill) == 1, do: fill, else: " "
+
+    content = Board.new(to_integer(width), to_integer(height), fill)
+    |> Board.to_string
+    attrs = %{ name: name, content: content } |> IO.inspect
+
     %Canvas{}
     |> Canvas.changeset(attrs)
     |> Repo.insert()
+  end
+
+
+  @doc """
+  Adds rectangle with upper left corner x, y and width and heigth to a canvas.
+
+  ## Examples
+
+  iex> add_rect(canvas, %{"x" => x, y; y, "width" =>  width, "height" => height, "fill" => fill, "outline" => outline})
+  {:ok, %Canvas{}}
+  """
+  def add_rect(%Canvas{content: content} = canvas, %{"x" => x, "y" => y, "width" =>  width, "height" => height, "fill" => fill, "outline" => outline}) do
+    content = content
+    |> Board.from_string()
+    |> Board.add_rect({to_integer(x), to_integer(y)}, {to_integer(width), to_integer(height)}, fill, outline)
+    |> Board.to_string()
+
+    attrs = %{ content: content}
+    canvas
+    |> Canvas.update(attrs)
+  end
+
+  @doc """
+  Adds flood to a canvas.
+
+  ## Examples
+
+  iex> add_flood(canvas, %{"x" => x, y; y, "fill" => fill})
+  {:ok, %Canvas{}}
+  """
+  def add_flood(%Canvas{content: content} = canvas, %{"x" => x, "y" => y, "fill" => fill} = attrs) do
+    content = content
+    |> IO.inspect
+    |> Board.from_string()
+    |> IO.inspect
+    |> Board.add_flood({to_integer(x), to_integer(y)}, fill)
+    |> IO.inspect
+    |> Board.to_string()
+    |> IO.inspect
+
+    attrs = %{ content: content}
+    canvas
+    |> Canvas.update(attrs)
   end
 
   @doc """

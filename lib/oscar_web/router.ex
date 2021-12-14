@@ -17,13 +17,15 @@ defmodule OscarWeb.Router do
   scope "/", OscarWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    resources "/canvas", PageController, only: [:index, :show]
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", OscarWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", OscarWeb do
+     pipe_through :api
+     resources "/canvas", CanvasController, except: [:new, :edit]
+     put "/canvas/:id/add_rect",  CanvasController, :add_rect
+     put "/canvas/:id/add_flood", CanvasController, :add_flood
+  end
 
   # Enables LiveDashboard only for development
   #
