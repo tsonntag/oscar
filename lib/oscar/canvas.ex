@@ -17,6 +17,8 @@ defmodule Oscar.Canvas do
 
   def size(canvas), do: canvas |> board() |> Board.size()
 
+  def to_string(%Canvas{content: content}), do: Board.to_string(content)
+
   @doc false
   def changeset(canvas, attrs) do
     canvas
@@ -62,12 +64,13 @@ defmodule Oscar.Canvas do
   iex> new(canvas, %{"width" => 2, height; 3, "fill" => "F"})
      %Canvas{content: "FF\nFF\nFF"}
   """
-  def new(%{"width" =>  width, "height" => height} = params) do
-    fill = Map.get(params, "fill", " ")
+  def new(%{"width" =>  width, "height" => height} = attrs) do
+    fill = Map.get(attrs, "fill", " ")
     fill = if String.length(fill) == 1, do: fill, else: " "
 
     content = Board.new({to_integer(width), to_integer(height)}, fill)
     |> Board.to_string
+
     %Canvas{content: content }
   end
 
@@ -85,7 +88,8 @@ defmodule Oscar.Canvas do
 
   """
   def create(attrs \\ %{}) do
-    %Canvas{}
+    attrs
+    |> new()
     |> Canvas.changeset(attrs)
     |> Repo.insert()
     |> broadcast(:canvas_created)
@@ -163,6 +167,7 @@ defmodule Oscar.Canvas do
   """
   def delete(%Canvas{} = canvas) do
     Repo.delete(canvas)
+    |> broadcast(:canvas_deleted)
   end
 
   @doc """

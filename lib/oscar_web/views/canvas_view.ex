@@ -14,7 +14,6 @@ defmodule OscarWeb.CanvasView do
   def render("canvas.json", %{canvas: canvas}) do
     %{
       id: canvas.id,
-      name: canvas.name,
       content: canvas.content
     }
   end

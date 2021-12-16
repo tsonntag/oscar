@@ -25,6 +25,10 @@ defmodule OscarWeb.CanvasLive.Index do
     {:noreply, assign(socket, :canvases, list_canvases())}
   end
 
+  def handle_info( { :canvas_deleted, _canvas }, socket) do
+    {:noreply, assign(socket, :canvases, list_canvases())}
+  end
+
   defp list_canvases do
     Canvas.list()
   end

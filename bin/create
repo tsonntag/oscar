@@ -1,1 +1,1 @@
-curl --data "{\"canvas\": {\"name\": \"$1\", \"width\":\"$2\", \"height\": \"$3\", \"fill\": \"$4\" }}" -H "Content-Type: application/json" localhost:4000/api/canvas
+curl --data "{\"canvas\": {\"width\":\"$1\", \"height\": \"$2\", \"fill\": \"$3\" }}" -H "Content-Type: application/json" localhost:4000/api/canvas
