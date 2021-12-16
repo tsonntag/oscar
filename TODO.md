@@ -20,3 +20,5 @@ DOC
 
 misc
   git branch with everything uncessary stripped
+  
+Version history
