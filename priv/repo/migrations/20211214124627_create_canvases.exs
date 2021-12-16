@@ -3,10 +3,7 @@ defmodule Oscar.Repo.Migrations.CreateCanvases do
 
   def change do
     create table(:canvases) do
-      add :name, :string
       add :content, :text
-
-      timestamps()
     end
   end
 end
