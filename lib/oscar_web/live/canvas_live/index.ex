@@ -14,30 +14,10 @@ defmodule OscarWeb.CanvasLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Edit Canvas")
-    |> assign(:canvas, Canvas.get!(id))
-  end
-
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, "New Canvas")
-    |> assign(:canvas, %Canvas{})
-  end
-
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Canvases")
     |> assign(:canvas, nil)
-  end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    canvas = Canvas.get!(id)
-    {:ok, _} = Canvas.delete(canvas)
-
-    {:noreply, assign(socket, :canvases, list_canvases())}
   end
 
   @impl true

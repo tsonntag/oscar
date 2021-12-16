@@ -1,22 +1,7 @@
 <h1>Listing Canvases</h1>
 
-<%= if @live_action in [:new, :edit] do %>
-  <.modal return_to={Routes.canvas_index_path(@socket, :index)}>
-    <.live_component
-      module={OscarWeb.CanvasLive.FormComponent}
-      id={@canvas.id || :new}
-      title={@page_title}
-      action={@live_action}
-      canvas={@canvas}
-      return_to={Routes.canvas_index_path(@socket, :index)}
-    />
-  </.modal>
-<% end %>
-
 <table id="canvases">
     <%= for canvas <- @canvases do %>
         <%= live_component OscarWeb.CanvasLive.IndexComponent, id: canvas.id, canvas: canvas %>
     <% end %>
 </table>
-
-<span><%= live_patch "New Canvas", to: Routes.canvas_index_path(@socket, :new) %></span>

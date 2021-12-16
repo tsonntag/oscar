@@ -23,5 +23,4 @@ defmodule OscarWeb.CanvasLive.Show do
   end
 
   defp page_title(:show), do: "Show Canvas"
-  defp page_title(:edit), do: "Edit Canvas"
 end

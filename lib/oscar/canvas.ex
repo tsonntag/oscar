@@ -9,7 +9,6 @@ defmodule Oscar.Canvas do
 
   schema "canvases" do
     field :content, :string
-    field :name, :string
 
     timestamps()
   end
@@ -21,8 +20,7 @@ defmodule Oscar.Canvas do
   @doc false
   def changeset(canvas, attrs) do
     canvas
-    |> cast(attrs, [:name, :content])
-    |> validate_required([:name])
+    |> cast(attrs, [:content])
   end
 
 
@@ -57,29 +55,29 @@ defmodule Oscar.Canvas do
   def get!(id), do: Repo.get!(Canvas, id)
 
   @doc """
-  Creates a canvas with name, width, height and an optional fill character.
+  Creates a canvas with width, height and an optional fill character.
 
   ## Examples
 
-  iex> new(canvas, %{"name" => "foo", "width" => 2, height; 3, "fill" => "F"})
-     %Canvas{name: "foo", content: "FF\nFF\nFF"}
+  iex> new(canvas, %{"width" => 2, height; 3, "fill" => "F"})
+     %Canvas{content: "FF\nFF\nFF"}
   """
-  def new(%{"name" =>  name, "width" =>  width, "height" => height} = params) do
+  def new(%{"width" =>  width, "height" => height} = params) do
     fill = Map.get(params, "fill", " ")
     fill = if String.length(fill) == 1, do: fill, else: " "
 
     content = Board.new({to_integer(width), to_integer(height)}, fill)
     |> Board.to_string
-    %Canvas{ name: name, content: content }
+    %Canvas{content: content }
   end
 
 
   @doc """
-  Creates a canvas with name and content
+  Creates a canvas with content
 
   ## Examples
 
-      iex> create_rect(canvas, %{"name" =>  name, "width" =>  width, height; height, "fill" => fill})
+      iex> create_rect(canvas, %{"width" =>  width, height; height, "fill" => fill})
       {:ok, %Canvas{}}
 
       iex> create(%{field: bad_value})

@@ -6,7 +6,7 @@ defmodule Oscar.CanvasTest do
 
     import Oscar.CanvasFixtures
 
-    @invalid_attrs %{content: nil, name: nil}
+    @invalid_attrs %{content: nil}
 
     test "listes/0 returns all canvases" do
       canvas = canvas_fixture()
@@ -19,11 +19,10 @@ defmodule Oscar.CanvasTest do
     end
 
     test "create/1 with valid data creates a canvas" do
-      valid_attrs = %{content: "some content", name: "some name"}
+      valid_attrs = %{content: "some content"}
 
       assert {:ok, %Canvas{} = canvas} = Canvas.create(valid_attrs)
       assert canvas.content == "some content"
-      assert canvas.name == "some name"
     end
 
     test "create/1 with invalid data returns error changeset" do
@@ -32,11 +31,10 @@ defmodule Oscar.CanvasTest do
 
     test "update/2 with valid data updates the canvas" do
       canvas = canvas_fixture()
-      update_attrs = %{content: "some updated content", name: "some updated name"}
+      update_attrs = %{content: "some updated content"}
 
       assert {:ok, %Canvas{} = canvas} = Canvas.update(canvas, update_attrs)
       assert canvas.content == "some updated content"
-      assert canvas.name == "some updated name"
     end
 
     test "update/2 with invalid data returns error changeset" do
@@ -58,8 +56,8 @@ defmodule Oscar.CanvasTest do
 
 
     test "rect/2 creates rect" do
-#     %Canva = Canvas.add_rect(%Canvas{}, Point{x: 0, y: 0}, %Point{x: 0, y: 0}, "X", "O")
-#     assert "", canvase
+      %Canva = Canvas.add_rect(%Canvas{content: "XXX\nXXX\n"}, Point{x: 0, y: 0}, %Point{x: 0, y: 0}, "X", "O")
+      assert "", canvase
     end
 
   end

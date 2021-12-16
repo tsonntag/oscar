@@ -3,25 +3,6 @@
 ### General
 I know that my written English is a mess.
 
-### TDD
-If I applied 'pure' TDD I would implement in a way that 
-the given test cases would work.
-However I also added test cases for the many other things that could happen.
-
-
-### Size of a canvas
-
-The specification does not define whether the canvas has a fixed size, i.e.
-if is given when the canvas is created (Canvas.new(size))
-or if it implicitely given by the 'extend' of the rectangles on the canvas.
-However the size of the canvas has to be known for the flood function.
-So either 
-1. we have to give the size when the canvas is created (Canvas.new(size))
-or
-2. we have to provide the size to the flood function (Canvas.flood(point, size, fill_charactor))
-I decided to implement 1.
-
-
 ### Test fixture 1
 
 There is an error in the specification:
@@ -36,7 +17,7 @@ The rectangle at [15,0] should either be [14,0] or the canvas has to be fixed.
 
 ### Trailing spaces
 The given test fixtures imply that trailing spaces have to be dropped.
-I implemented it like that even if I assumed a fixed canvas size
+I implemented it like that even if fixed canvas size is assumed.
 
 
 ### Flood
@@ -53,3 +34,15 @@ If a rectangle doesn't fit completedly in the canvas it will be cut.
 ### Negative arguments
 Negative coordinates and lengths are ignored (are noop).
 This is a design decision.
+
+
+### Database
+For such a trivial project a database like DETS would have been sufficient.
+However I decided to use postgresql since it is part of a typical stack.
+
+### Globally unique identifier
+I assumed that there is only one database instance in production.
+In this case the unique primary key 'id' of the canvases table can be used
+as globally unique identifier.
+In case of more instances I would add another string column containing an UUID 
+to the canvases table
