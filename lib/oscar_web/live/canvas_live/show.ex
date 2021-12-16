@@ -19,7 +19,7 @@ defmodule OscarWeb.CanvasLive.Show do
 
   @impl true
   def handle_info( { :canvas_updated, canvas }, socket) do
-    {:noreply, assign(socket, :canvases, Canvas.get(canvas.id))}
+    {:noreply, assign(socket, :canvases, Canvas.get!(canvas.id))}
   end
 
   defp page_title(:show), do: "Show Canvas"

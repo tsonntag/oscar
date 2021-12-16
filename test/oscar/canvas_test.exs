@@ -10,7 +10,7 @@ defmodule Oscar.CanvasTest do
 
     test "listes/0 returns all canvases" do
       canvas = canvas_fixture()
-      assert Canvas.listes() == [canvas]
+      assert Canvas.list() == [canvas]
     end
 
     test "get!/1 returns the canvas with given id" do
@@ -58,8 +58,8 @@ defmodule Oscar.CanvasTest do
 
 
     test "rect/2 creates rect" do
-      %Canva = Canvas.add_rect(%Canvas{}, Point{x: 0, y: 0}, %Point{x: 0, y: 0}, "X", "O")
-      assert "", canvase
+#     %Canva = Canvas.add_rect(%Canvas{}, Point{x: 0, y: 0}, %Point{x: 0, y: 0}, "X", "O")
+#     assert "", canvase
     end
 
   end

@@ -14,8 +14,7 @@ defmodule Oscar.CanvasFixtures do
         content: "some content",
         name: "some name"
       })
-      |> Oscar.Canvas.create_canvas()
-
+      |> Oscar.Canvas.create()
     canvas
   end
 end

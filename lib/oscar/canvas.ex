@@ -61,6 +61,24 @@ defmodule Oscar.Canvas do
 
   ## Examples
 
+  iex> new(canvas, %{"name" => "foo", "width" => 2, height; 3, "fill" => "F"})
+     %Canvas{name: "foo", content: "FF\nFF\nFF"}
+  """
+  def new(%{"name" =>  name, "width" =>  width, "height" => height} = params) do
+    fill = Map.get(params, "fill", " ")
+    fill = if String.length(fill) == 1, do: fill, else: " "
+
+    content = Board.new({to_integer(width), to_integer(height)}, fill)
+    |> Board.to_string
+    %Canvas{ name: name, content: content }
+  end
+
+
+  @doc """
+  Creates a canvas with name and content
+
+  ## Examples
+
       iex> create_rect(canvas, %{"name" =>  name, "width" =>  width, height; height, "fill" => fill})
       {:ok, %Canvas{}}
 
@@ -68,14 +86,7 @@ defmodule Oscar.Canvas do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create(%{"name" =>  name, "width" =>  width, "height" => height} = params) do
-    fill = Map.get(params, "fill", " ")
-    fill = if String.length(fill) == 1, do: fill, else: " "
-
-    content = Board.new(to_integer(width), to_integer(height), fill)
-    |> Board.to_string
-    attrs = %{ name: name, content: content } |> IO.inspect
-
+  def create(attrs \\ %{}) do
     %Canvas{}
     |> Canvas.changeset(attrs)
     |> Repo.insert()

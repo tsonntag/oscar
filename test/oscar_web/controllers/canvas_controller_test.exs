@@ -1,9 +1,9 @@
 defmodule OscarWeb.CanvasControllerTest do
   use OscarWeb.ConnCase
 
-  import Oscar.ContextFixtures
+  import Oscar.CanvasFixtures
 
-  alias Oscar.Context.Canvas
+  alias Oscar.Canvas
 
   @create_attrs %{
     name: "some name"

@@ -15,7 +15,7 @@
 
 <table id="canvases">
     <%= for canvas <- @canvases do %>
-        <%= live_component @socket, OscarWeb.CanvasLive.IndexComponent, id: canvas.id, canvas: canvas %>
+        <%= live_component OscarWeb.CanvasLive.IndexComponent, id: canvas.id, canvas: canvas %>
     <% end %>
 </table>
 

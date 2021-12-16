@@ -2,7 +2,7 @@ defmodule OscarWeb.CanvasLiveTest do
   use OscarWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Oscar.ContentFixtures
+  import Oscar.CanvasFixtures
 
   @create_attrs %{content: "some content", name: "some name"}
   @update_attrs %{content: "some updated content", name: "some updated name"}

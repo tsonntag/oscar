@@ -41,8 +41,7 @@ defmodule OscarWeb.CanvasLive.Index do
   end
 
   @impl true
-  def handle_info( { :canvas_created, canvas }, socket) do
-    #{:noreply, update(socket, :canvases, fn canvases -> [canvas | canvases] end)}
+  def handle_info( { :canvas_created, _canvas }, socket) do
     {:noreply, assign(socket, :canvases, list_canvases())}
   end
 
