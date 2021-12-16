@@ -35,6 +35,10 @@ defmodule Oscar.Board do
 
   ## rect
 
+  def add_rect(board, %{ x: x, y: y, width: width, height: height } = params ) do
+    add_rect(board, { x, y }, { width, height }, params[:fill], params[:outline] )
+  end
+
   def add_rect(board, _corner, _size, _fill, _outline \\ nil)
 
   # do nothing if neither fill nor outline is given
@@ -76,6 +80,10 @@ defmodule Oscar.Board do
   def do_add_rect(board, _point, _size, _char), do: board
 
   ## flood
+
+  def add_flood(board, %{x: x, y: y, fill: fill}) do
+    add_flood(board, { x, y }, fill)
+  end
 
   def add_flood(board, point, new_char) do
     do_add_flood(board, point, get_char(board, point), new_char)

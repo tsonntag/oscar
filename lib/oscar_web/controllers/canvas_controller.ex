@@ -24,14 +24,6 @@ defmodule OscarWeb.CanvasController do
     render(conn, "show.json", canvas: canvas)
   end
 
-  def update(conn, %{"id" => id, "canvas" => canvas_params}) do
-    canvas = Canvas.get!(id)
-
-    with {:ok, %Canvas{} = canvas} <- Canvas.update(canvas, canvas_params) do
-      render(conn, "show.json", canvas: canvas)
-    end
-  end
-
   def add_rect(conn, %{"id" => id, "canvas" => canvas_params}) do
     canvas = Canvas.get!(id)
 

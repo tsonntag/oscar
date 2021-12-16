@@ -112,6 +112,18 @@ defmodule Oscar.BoardTest do
       """
     end
 
+    test "add_rect is idempotent" do
+      actual = Board.new({ 3, 2 }, "X")
+      |> Board.add_rect({ 0, 0 }, { 2, 1 }, "Y")
+      |> Board.add_rect({ 0, 0 }, { 2, 1 }, "Y")
+      |> Board.to_string()
+      assert actual ==
+      """
+      YYX
+      XXX
+      """
+    end
+
     test "add_rect adds fill and without overlapping" do
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 2, 0 }, { 2, 1 }, "Y") |> Board.to_string()
       assert actual ==

@@ -25,6 +25,19 @@ defmodule Oscar.Canvas do
     |> cast(attrs, [:content])
   end
 
+  @doc false
+  def rect_changeset( attrs) do
+    types = %{x: :integer, y: :integer, width: :integer, height: :integer, fill: :string, outline: :string}
+    data = %{}
+    cast({data, types}, attrs, [:x, :y, :width, :height, :fill, :outline])
+  end
+
+  @doc false
+  def flood_changeset( attrs) do
+    types = %{x: :integer, y: :integer, fill: :string}
+    data = %{}
+    cast({data, types}, attrs, [:x, :y, :fill])
+  end
 
 
   @doc """
@@ -37,7 +50,7 @@ defmodule Oscar.Canvas do
 
   """
   def list do
-    Repo.all(Canvas) |> IO.inspect
+    Repo.all(Canvas)
   end
 
   @doc """
@@ -104,15 +117,16 @@ defmodule Oscar.Canvas do
   iex> add_rect(canvas, %{"x" => x, y; y, "width" =>  width, "height" => height, "fill" => fill, "outline" => outline})
   {:ok, %Canvas{}}
   """
-  def add_rect(%Canvas{content: content} = canvas, %{"x" => x, "y" => y, "width" =>  width, "height" => height, "fill" => fill, "outline" => outline}) do
+  def add_rect(%Canvas{content: content} = canvas, params) do 
+    rect_params = params |> rect_changeset() |> apply_changes()
+
     content = content
     |> Board.from_string()
-    |> Board.add_rect({to_integer(x), to_integer(y)}, {to_integer(width), to_integer(height)}, fill, outline)
+    |> Board.add_rect(rect_params)
     |> Board.to_string()
 
-    attrs = %{ content: content}
     canvas
-    |> Canvas.update(attrs)
+    |> Canvas.update(%{ content: content})
   end
 
   @doc """
@@ -120,18 +134,19 @@ defmodule Oscar.Canvas do
 
   ## Examples
 
-  iex> add_flood(canvas, %{"x" => x, y; y, "fill" => fill})
+  iex> add_flood(canvas, %{"x" => x, "y" => y, "fill" => fill})
   {:ok, %Canvas{}}
   """
-  def add_flood(%Canvas{content: content} = canvas, %{"x" => x, "y" => y, "fill" => fill} ) do
+  def add_flood(%Canvas{content: content} = canvas, params) do
+    flood_params = params |> flood_changeset() |> apply_changes()
+
     content = content
     |> Board.from_string()
-    |> Board.add_flood({to_integer(x), to_integer(y)}, fill)
+    |> Board.add_flood(flood_params)
     |> Board.to_string()
 
-    attrs = %{ content: content}
     canvas
-    |> Canvas.update(attrs)
+    |> Canvas.update(%{ content: content })
   end
 
   @doc """
@@ -148,7 +163,7 @@ defmodule Oscar.Canvas do
   """
   def update(%Canvas{} = canvas, attrs) do
     canvas
-    |> Canvas.changeset(attrs)
+    |> changeset(attrs)
     |> Repo.update()
     |> broadcast(:canvas_updated)
   end
@@ -170,18 +185,6 @@ defmodule Oscar.Canvas do
     |> broadcast(:canvas_deleted)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking canvas changes.
-
-  ## Examples
-
-      iex> change(canvas)
-      %Ecto.Changeset{data: %Canvas{}}
-
-  """
-  def change(%Canvas{} = canvas, attrs \\ %{}) do
-    Canvas.changeset(canvas, attrs)
-  end
 
 
   def subscribe do

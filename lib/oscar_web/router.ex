@@ -23,7 +23,7 @@ defmodule OscarWeb.Router do
 
   scope "/api", OscarWeb do
      pipe_through :api
-     resources "/canvas", CanvasController, except: [:new, :edit]
+     resources "/canvas", CanvasController, except: [:new, :edit, :update]
      put "/canvas/:id/add_rect",  CanvasController, :add_rect
      put "/canvas/:id/add_flood", CanvasController, :add_flood
   end
