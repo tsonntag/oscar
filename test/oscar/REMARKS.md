@@ -35,18 +35,21 @@ The rectangle at [15,0] should either be [14,0] or the canvas has to be fixed.
 
 
 ### Trailing spaces
-
 The given test fixtures imply that trailing spaces have to be dropped.
-I implemented it like even if I assumed a fixed canvas size
+I implemented it like that even if I assumed a fixed canvas size
 
 
 ### Flood
 I implemented the 'flood' such that it also works to non empty points.
 See test case "flood on non empty point"
-This is how it works in common drawing tools.
+This is how it usually works in common drawing tools.
 
 
 ### Outside/Inside
 I decided to 'ignore' points and sizes which would place a rectangle or flood
 outside the canvas.
 If a rectangle doesn't fit completedly in the canvas it will be cut.
+
+### Negative arguments
+Negative coordinates and lengths are ignored (are noop).
+This is a design decision.
