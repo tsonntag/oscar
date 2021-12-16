@@ -5,61 +5,69 @@ defmodule Oscar.BoardTest do
     alias Oscar.Board
 
     test "new/1 returns an empty board" do
-      assert Board.new({ 2, 2 }) == [[ nil, nil], [  nil, nil]]
+      assert Board.new({ 2, 2 }) == [[ " ", " " ], [ " ", " "]]
     end
 
     test "new/1 returns an board" do
       assert Board.new({ 3, 2 }, "X") == [[ "X", "X", "X"], [ "X", "X", "X"]]
     end
 
-    test "to_string/1 replaces non trailing empty points with space" do
-      assert Board.to_string([[ nil, nil], [ "5", "6"]]) ==
-      """
-
-      56
-      """
-
-      assert Board.to_string([[ nil, "X"], [ "5", "6"]]) ==
-      """
-       X
-      56
-      """
-
-      assert Board.to_string([[ nil, "X", nil], [ "4", "5", "6"]]) ==
-      """
-       X
-      456
-      """
-    end
-
-    test "to_string/1 without spaces" do
+    test "to_string/1" do
       assert Board.to_string([[ "1", "2", "3"], [ "4", "5", "6"]]) ==
       """
       123
-      456
+      456\
+      """
+
+      assert Board.to_string([[ " ", " "], [ "5", "6"]]) ==
+      """
+        
+      56\
+      """
+
+      assert Board.to_string([[ " ", "X"], [ "5", "6"]]) ==
+      """
+       X
+      56\
+      """
+
+      assert Board.to_string([[ " ", "X", " "], [ "4", "5", "6"]]) ==
+      """
+       X 
+      456\
       """
     end
+
+    test "from_string/1" do
+      assert Board.from_string("123\n456") == [[ "1", "2", "3"], [ "4", "5", "6"]]
+    end
+
+    test "from_string/1 with empty lines" do
+      assert Board.from_string("123\n456\n   ") == [[ "1", "2", "3"], [ "4", "5", "6"], [ " ", " ", " "]  ]
+    end
+
+
 
     test "add_rect with empty rect does nothing" do
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, 1 }, { 0, 0 }, "Y") |> Board.to_string()
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
 
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, 1 }, { 0, 3 }, "Y") |> Board.to_string()
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
 
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, 1 }, { 3, 0 }, "Y") |> Board.to_string()
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
     end
 
@@ -68,7 +76,7 @@ defmodule Oscar.BoardTest do
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
     end
 
@@ -77,28 +85,28 @@ defmodule Oscar.BoardTest do
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
 
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, -1 }, { 1, 1 }, "Y") |> Board.to_string()
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
 
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, 0 }, { -1, 1 }, "Y") |> Board.to_string()
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
 
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, 0 }, { 1, -1 }, "Y") |> Board.to_string()
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
 
     end
@@ -108,7 +116,7 @@ defmodule Oscar.BoardTest do
       assert actual ==
       """
       YYX
-      XXX
+      XXX\
       """
     end
 
@@ -120,7 +128,7 @@ defmodule Oscar.BoardTest do
       assert actual ==
       """
       YYX
-      XXX
+      XXX\
       """
     end
 
@@ -129,7 +137,7 @@ defmodule Oscar.BoardTest do
       assert actual ==
       """
       XXY
-      XXX
+      XXX\
       """
     end
 
@@ -141,7 +149,7 @@ defmodule Oscar.BoardTest do
       assert actual ==
       """
       XXX
-      XXX
+      XXX\
       """
     end
 
@@ -156,7 +164,7 @@ defmodule Oscar.BoardTest do
       YXYXX
       YYYXX
       XXXXX
-      XXXXX
+      XXXXX\
       """
     end
 
@@ -171,7 +179,7 @@ defmodule Oscar.BoardTest do
       YZYXX
       YYYXX
       XXXXX
-      XXXXX
+      XXXXX\
       """
     end
 
@@ -186,7 +194,7 @@ defmodule Oscar.BoardTest do
       YYXXX
       YYXXX
       XXXXX
-      XXXXX
+      XXXXX\
       """
     end
 
@@ -198,11 +206,11 @@ defmodule Oscar.BoardTest do
 
       assert actual ==
       """
-
+           
       OOOOO
       OFFFO
       OOOOO
-
+           \
       """
     end
 
@@ -214,14 +222,13 @@ defmodule Oscar.BoardTest do
 
       assert actual ==
       """
-
+           
       OOOOO
       O   O
       OOOOO
-
+           \
       """
     end
-
 
     test "add_flood on non empty point" do
       actual = Board.new({ 5, 5 })
@@ -231,11 +238,11 @@ defmodule Oscar.BoardTest do
 
       assert actual ==
       """
-
+           
       OOOOO
       OFFFO
       OOOOO
-
+           \
       """
     end
 
@@ -246,15 +253,15 @@ defmodule Oscar.BoardTest do
 
       assert actual ==
       """
-
-
-
+                              
+                              
+                              
                 xxxxxxxxxxxxxx
                 xoooooooooooox
                 xoooooooooooox
                 xoooooooooooox
                 xoooooooooooox
-                xxxxxxxxxxxxxx
+                xxxxxxxxxxxxxx\
       """
     end
 
@@ -267,15 +274,15 @@ defmodule Oscar.BoardTest do
 
       assert actual ==
       """
-
-
-         @@@@@
+                              
+                              
+         @@@@@                
          @XXX@  xxxxxxxxxxxxxx
          @@@@@  xoooooooooooox
                 xoooooooooooox
                 xoooooooooooox
                 xoooooooooooox
-                xxxxxxxxxxxxxx
+                xxxxxxxxxxxxxx\
       """
     end
 
@@ -292,8 +299,8 @@ defmodule Oscar.BoardTest do
                    .......
                    .......
                    .......
-
-
+                          
+                          \
      """
     end
 
@@ -311,8 +318,8 @@ defmodule Oscar.BoardTest do
      oooooooo      .......
      o      o      .......
      o    xxxxx    .......
-     oooooxxxxx
-          xxxxx
+     oooooxxxxx           
+          xxxxx           \
      """
     end
 
@@ -332,7 +339,7 @@ defmodule Oscar.BoardTest do
       o      o------.......
       o    xxxxx----.......
       oooooxxxxx-----------
-           xxxxx-----------
+           xxxxx-----------\
       """
     end
   end

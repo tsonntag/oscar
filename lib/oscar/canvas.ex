@@ -122,8 +122,11 @@ defmodule Oscar.Canvas do
 
     content = content
     |> Board.from_string()
+    |> IO.inspect(label: "FROM")
     |> Board.add_rect(rect_params)
+    |> IO.inspect(label: "RECT")
     |> Board.to_string()
+    |> IO.inspect(label: "TO")
 
     canvas
     |> Canvas.update(%{ content: content})

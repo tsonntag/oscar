@@ -1,13 +1,13 @@
 defmodule Oscar.Board do
 
-  def new( { width , height }, fill \\ nil) do
+  def new( { width , height }, fill \\ " ") do
     List.duplicate(fill, width) |> List.duplicate(height)
   end
 
   def to_string(board) do
     board
-    |> Enum.map(fn line -> line_to_string(line) <> "\n" end)
-    |> Enum.join("")
+    |> Enum.map(&Enum.join(&1, ""))
+    |> Enum.join("\n")
   end
 
   def from_string(s) do
@@ -15,16 +15,16 @@ defmodule Oscar.Board do
   end
 
   # remove trailing nils and replace remaining nils with " "
-  defp line_to_string(line) do
-    {_, not_nil} = line
-    |> Enum.reverse
-    |> Enum.split_while(&is_nil/1)
+# defp line_to_string(line) do
+#   {_, not_nil} = line
+#   |> Enum.reverse
+#   |> Enum.split_while(&is_nil/1)
 
-    not_nil
-    |> Enum.reverse
-    |> Enum.map(fn c -> if is_nil(c), do: " ", else: c end)
-    |> Enum.join("")
-  end
+#   not_nil
+#   |> Enum.reverse
+#   |> Enum.map(fn c -> if is_nil(c), do: " ", else: c end)
+#   |> Enum.join("")
+# end
 
   def width(board), do: Enum.at(board, 0, []) |> Enum.count()
 
