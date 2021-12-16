@@ -72,22 +72,8 @@ defmodule Oscar.BoardTest do
       """
     end
 
-    test "add_rect adding a rect with negative arguments" do
+    test "add_rect adding a rect with negative arguments is ignored" do
       actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ -1, 0 }, { 1, 1 }, "Y") |> Board.to_string()
-      assert actual ==
-      """
-      XXY
-      XXX
-      """
-
-      actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ -2, 0 }, { 1, 1 }, "Y") |> Board.to_string()
-      assert actual ==
-      """
-      XYX
-      XXX
-      """
-
-      actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ -4, 0 }, { 1, 1 }, "Y") |> Board.to_string()
       assert actual ==
       """
       XXX
@@ -98,15 +84,23 @@ defmodule Oscar.BoardTest do
       assert actual ==
       """
       XXX
-      YXX
-      """
-
-      actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, -2 }, { 1, 1 }, "Y") |> Board.to_string()
-      assert actual ==
-      """
-      YXX
       XXX
       """
+
+      actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, 0 }, { -1, 1 }, "Y") |> Board.to_string()
+      assert actual ==
+      """
+      XXX
+      XXX
+      """
+
+      actual = Board.new({ 3, 2 }, "X") |> Board.add_rect({ 0, 0 }, { 1, -1 }, "Y") |> Board.to_string()
+      assert actual ==
+      """
+      XXX
+      XXX
+      """
+
     end
 
     test "add_rect adds fill to board" do
@@ -200,17 +194,17 @@ defmodule Oscar.BoardTest do
       """
     end
 
-    test "add_flood on empty point which negative coordinates" do
+    test "add_flood on empty point with negative coordinates is ignored" do
       actual = Board.new({ 5, 5 })
       |> Board.add_rect({ 0, 1 }, { 5, 3 }, nil, "O")
-      |> Board.add_flood({ 1, -2 }, "F")
+      |> Board.add_flood({ -2, 1 }, "F")
       |> Board.to_string()
 
       assert actual ==
       """
 
       OOOOO
-      OFFFO
+      O   O
       OOOOO
 
       """
