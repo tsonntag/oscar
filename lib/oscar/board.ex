@@ -74,7 +74,7 @@ defmodule Oscar.Board do
     for x <- (x..x + width - 1), y <- (y..y + height - 1) do
       { x, y }
     end
-    |> Enum.reduce(board, fn p, board_ -> set_char(board_, p, char) end)
+    |> set_points(board, char)
   end
 
   def do_add_rect(board, _point, _size, _char), do: board
@@ -85,30 +85,44 @@ defmodule Oscar.Board do
     add_flood(board, { x, y }, fill)
   end
 
-  def add_flood(board, point, new_char) do
-    do_add_flood(board, point, get_char(board, point), new_char)
+  def add_flood(board, { x, y } = point, char) when x >= 0 and y >= 0 and is_binary(char) do
+    to_be_flooded(board, point, MapSet.new([point]))
+    |> IO.inspect(label: "ADD FLOOD")
+    |> set_points(board, char)
   end
 
-  defp do_add_flood(board, { x, y } = point, old_char, new_char) when x >= 0 and y >= 0 do
-    board
-    |> neighbours_on_board(point)
-    |> Enum.filter(fn p ->
-      get_char(board, p) == old_char 
-    end)
-    |> Enum.reduce(board, fn neighbour, board_ ->
-      board_
-      |> set_char(neighbour, new_char)
-      |> do_add_flood(neighbour, old_char, new_char)
-    end)
-  end
-
-  defp do_add_flood(board, _point, _old_char, _new_char), do: board
+  def add_flood(board, _point, _char), do: board
 
   # private
 
-  defp neighbours_on_board(board, { x, y }) do
+  defp to_be_flooded(board, point, found) do
+#   found |> IO.inspect(label: "\nFOUND")
+    char = get_char(board, point)
+#   |> IO.inspect(label: "CHAR")
+
+    neighbours_ = point
+#   |> IO.inspect(label: "POINT")
+    |> neighbours()
+#   |> IO.inspect(label: "NB")
+    |> Enum.filter(fn p ->
+      !MapSet.member?(found, p)
+      && get_char(board, p) == char
+      && on_board?(board, p)
+    end)
+    |> Enum.reduce(found, fn nb, f -> MapSet.put(f, nb) end)
+    |> IO.inspect(label: "FILTERED")
+    |> Enum.flat_map(&to_be_flooded(board, &1, found ))
+    |> MapSet.new()
+#   |> IO.inspect(label: "NEIGHBORS ->")
+    MapSet.put(neighbours_ , point)
+  end
+
+  defp set_points(points, board, char) do
+     points |> Enum.reduce(board, fn p, board_ -> set_char(board_, p, char) end)
+  end
+
+  defp neighbours({ x, y }) do
     [{ x-1, y }, { x+1, y }, { x, y-1 }, { x, y+1 }]
-    |> Enum.filter(&on_board?(board, &1))
   end
 
   defp get_char(board, { x, y }, default \\ nil) do

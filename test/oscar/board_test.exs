@@ -198,19 +198,63 @@ defmodule Oscar.BoardTest do
       """
     end
 
-    test "add_flood on empty point" do
-      actual = Board.new({ 5, 5 })
-      |> Board.add_rect({ 0, 1 }, { 5, 3 }, nil, "O")
-      |> Board.add_flood({ 1, 2 }, "F")
+    test "fixture 3 a" do
+      actual =
+      """
+                    .......
+                    .......
+      oooooooo      .......
+      o      o      .......
+      o    xxxxx    .......
+      oooooxxxxx           \
+      """
+      |> Board.from_string()
+      |> Board.add_flood({ 0, 0 }, "-")
+      |> Board.to_string()
+      assert actual ==
+      """
+      --------------.......
+      --------------.......
+      oooooooo------.......
+      o      o------.......
+      o    xxxxx----.......
+      oooooxxxxx-----------\
+      """
+    end
+
+    test "add_flood on empty board" do
+      actual =
+      """
+          
+         A
+       A A
+      A   \
+      """
+      |> Board.from_string()
+      |> Board.add_flood({ 0, 0 }, "-")
       |> Board.to_string()
 
       assert actual ==
       """
-           
-      OOOOO
-      OFFFO
-      OOOOO
-           \
+      ----
+      ---A
+      A--A
+      A---\
+      """
+    end
+
+
+    test "add_flood on empty point" do
+      actual = Board.new({ 4, 3 })
+      |> Board.add_rect({ 0, 0 }, { 4, 3 }, nil, ".")
+      |> Board.add_flood({ 1, 1 }, "F")
+      |> Board.to_string()
+
+      assert actual ==
+      """
+      ....
+      .FF.
+      ....\
       """
     end
 
@@ -244,6 +288,32 @@ defmodule Oscar.BoardTest do
       OOOOO
            \
       """
+    end
+
+    test "add_flood on same point" do
+      actual = Board.new({ 5, 5 })
+      |> Board.add_rect({ 0, 1 }, { 5, 3 }, ".", "O")
+      |> Board.add_flood({ 1, 2 }, "O")
+      |> Board.to_string()
+
+      assert actual ==
+      """
+           
+      OOOOO
+      OOOOO
+      OOOOO
+           \
+      """
+    end
+
+    test "add_flood on same point 2" do
+      board = "xx"
+      added = board
+      |> Board.from_string()
+      |> Board.add_flood({ 0, 0 }, "x")
+      |> Board.to_string()
+
+      assert board == added
     end
 
     test "fixture 1/1" do
