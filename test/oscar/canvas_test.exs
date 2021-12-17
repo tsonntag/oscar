@@ -66,24 +66,24 @@ defmodule Oscar.CanvasTest do
       assert canvas.content == "XX.\nXX.\n..."
      end
 
-    test "add_flood/1 with invalid data returns error changeset" do
+    test "flood_fill/1 with invalid data returns error changeset" do
       canvas = canvas_fixture(%{content: "...\n..."})
       invalid_attrs = %{"y" => 1, "fill" => "X" }
-      assert {:error, %Ecto.Changeset{}} = Canvas.add_flood(canvas, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Canvas.flood_fill(canvas, invalid_attrs)
 
       canvas = canvas_fixture(%{content: "...\n..."})
       invalid_attrs = %{"x" => 1, "xy" => 1, "fill" => "X" }
-      assert {:error, %Ecto.Changeset{}} = Canvas.add_flood(canvas, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Canvas.flood_fill(canvas, invalid_attrs)
 
       canvas = canvas_fixture(%{content: "...\n..."})
       invalid_attrs = %{"x" => 1, "y" => 1, "fill" => "XX" }
-      assert {:error, %Ecto.Changeset{}} = Canvas.add_flood(canvas, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Canvas.flood_fill(canvas, invalid_attrs)
      end
 
-    test "add_flood/1 with valid data updates a canvas" do
+    test "flood_fill/1 with valid data updates a canvas" do
       canvas = canvas_fixture(%{content: "...\nXXX\nXXX"})
       valid_attrs = %{"x" => 1, "y" => 0, "fill" => "A" }
-      assert {:ok, %Canvas{} = canvas} = Canvas.add_flood(canvas, valid_attrs)
+      assert {:ok, %Canvas{} = canvas} = Canvas.flood_fill(canvas, valid_attrs)
       assert canvas.content == "AAA\nXXX\nXXX"
      end
 

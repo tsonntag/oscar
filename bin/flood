@@ -1,2 +1,2 @@
 id=$1
-curl -X PUT --data "{\"canvas\": {\"x\":\"$2\", \"y\":\"$3\", \"fill\":\"$4\" }}" -H "Content-Type: application/json" localhost:4000/api/canvas/$id/add_flood
+curl -X PUT --data "{\"canvas\": {\"x\":\"$2\", \"y\":\"$3\", \"fill\":\"$4\" }}" -H "Content-Type: application/json" localhost:4000/api/canvas/$id/flood_fill

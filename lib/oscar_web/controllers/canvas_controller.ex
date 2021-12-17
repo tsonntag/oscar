@@ -38,7 +38,6 @@ defmodule OscarWeb.CanvasController do
 
   See Oscar.Canvas.add_rect for params
   """
-
   def add_rect(conn, %{"id" => id, "canvas" => params}) do
     canvas = Canvas.get!(id)
 
@@ -50,13 +49,12 @@ defmodule OscarWeb.CanvasController do
   @doc """
   Adds a flood to a canvas.
 
-  See Oscar.Canvas.add_flood for params
+  See Oscar.Canvas.flood_fill for params
   """
-
-  def add_flood(conn, %{"id" => id, "canvas" => params}) do
+  def flood_fill(conn, %{"id" => id, "canvas" => params}) do
     canvas = Canvas.get!(id)
 
-    with {:ok, %Canvas{} = canvas} <- Canvas.add_flood(canvas, params) do
+    with {:ok, %Canvas{} = canvas} <- Canvas.flood_fill(canvas, params) do
       render(conn, "show.json", canvas: canvas)
     end
   end

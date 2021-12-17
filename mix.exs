@@ -49,8 +49,6 @@ defmodule Oscar.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:phoenix_slime, git: "https://github.com/slime-lang/phoenix_slime.git", branch: "master"
-      }
     ]
   end
 

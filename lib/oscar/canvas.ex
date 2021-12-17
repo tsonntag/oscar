@@ -1,4 +1,28 @@
 defmodule Oscar.Canvas do
+  @moduledoc ~S"""
+  ### Canvases
+
+  A canvas represents a two dimensional array of characters.
+
+  This module implements the database API to create, draw, read, delete canvases.
+
+  ### Drawing operations
+
+  - A rectangle parameterised with…
+  - Coordinates for the **upper-left corner**.
+  - **width** and **height**.
+  - an optional **fill** character.
+  - an optional **outline** character.
+  - One of either **fill** or **outline** should always be present.
+  - A flood fill operation, parameterised with…
+  - the **start coordinates** from where to begin the flood fill.
+  - a **fill** character.
+
+  A flood fill operation draws the fill character to the start coordinate, and continues to attempt drawing the character around (up, down, left, right) in each direction from the position it was drawn at, as long as a different character, or a border of the canvas, is not reached.
+
+  - Drawing operations are applied to the canvas in the same order that they are passed in to the server.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query, warn: false
@@ -10,11 +34,7 @@ defmodule Oscar.Canvas do
     timestamps()
   end
 
-  def board(%Canvas{content: content}), do: Board.from_string(content)
-
-  def size(canvas), do: canvas |> board() |> Board.size()
-
-  def to_string(%Canvas{content: content}), do: Board.to_string(content)
+  def to_content(%Canvas{content: content}), do: Board.to_content(content)
 
   @doc false
   def changeset(canvas, attrs) do
@@ -24,7 +44,7 @@ defmodule Oscar.Canvas do
   end
 
   @doc false
-  def changeset_for_new(attrs) do
+  defp changeset_for_new(attrs) do
     types = %{width: :integer, height: :integer, fill: :string}
     data = %{}
     cast({data, types}, attrs, [:width, :height, :fill])
@@ -33,7 +53,7 @@ defmodule Oscar.Canvas do
   end
 
   @doc false
-  defp changeset_for_add_flood( attrs) do
+  defp changeset_for_flood_fill( attrs) do
     types = %{x: :integer, y: :integer, fill: :string}
     data = %{}
     cast({data, types}, attrs, [:x, :y, :fill])
@@ -51,18 +71,6 @@ defmodule Oscar.Canvas do
     |> validate_length(:outline, is: 1)
     |> validate_length(:fill, is: 1)
   end
-
-  @doc false
-  defp validate_or(changeset, fields) do
-    if Enum.any?(fields, &get_field(changeset, &1)) do
-      changeset
-    else
-      fields |> Enum.reduce(changeset, fn field, changeset ->
-        add_error(changeset, field, "One of these fields must be present: #{inspect fields}")
-      end)
-    end
-  end
-
 
   @doc """
   Returns the list of canvases.
@@ -94,7 +102,7 @@ defmodule Oscar.Canvas do
   def get!(id), do: Repo.get!(Canvas, id)
 
   @doc """
-  Creates a canvas from width and height 
+  Creates a canvas from width and height and with optional fill (default is " ")
 
   ## Examples
 
@@ -108,25 +116,14 @@ defmodule Oscar.Canvas do
   def create(attrs \\ %{}) do
     cs = changeset_for_new(attrs)
     if cs.valid? do
-      content = cs |> apply_changes() |> Board.new() |> Board.to_string() 
+      content = cs |> apply_changes() |> Board.new() |> Board.to_content() 
       create_content(%{content: content})
      else
        { :error, cs }
     end
   end
 
-  @doc """
-  Creates a canvas with content
-
-  ## Examples
-
-  iex> create_rect(canvas, %{"content" => "AA"})
-  {:ok, %Canvas{content: "AA"}}
-
-  iex> create(%{field: bad_value})
-  {:error, %Ecto.Changeset{}}
-
-  """
+  @doc false
   def create_content(attrs \\ %{}) do
     Canvas.changeset(%Canvas{}, attrs)
     |> Repo.insert()
@@ -147,9 +144,9 @@ defmodule Oscar.Canvas do
 
     if cs.valid? do
       content = content
-      |> Board.from_string()
+      |> Board.from_content()
       |> Board.add_rect(apply_changes(cs))
-      |> Board.to_string()
+      |> Board.to_content()
 
       Canvas.update(canvas, %{content: content})
     else
@@ -162,17 +159,17 @@ defmodule Oscar.Canvas do
 
   ## Examples
 
-  iex> add_flood(canvas, %{"x" => x, "y" => y, "fill" => fill})
+  iex> flood_fill(canvas, %{"x" => x, "y" => y, "fill" => fill})
   {:ok, %Canvas{}}
   """
-  def add_flood(%Canvas{content: content} = canvas, attrs) do
-    cs = changeset_for_add_flood(attrs)
+  def flood_fill(%Canvas{content: content} = canvas, attrs) do
+    cs = changeset_for_flood_fill(attrs)
 
     if cs.valid? do
       content = content
-      |> Board.from_string()
-      |> Board.add_flood(apply_changes(cs))
-      |> Board.to_string()
+      |> Board.from_content()
+      |> Board.flood_fill(apply_changes(cs))
+      |> Board.to_content()
 
       Canvas.update(canvas, %{content: content})
     else
@@ -211,14 +208,17 @@ defmodule Oscar.Canvas do
     Phoenix.PubSub.subscribe(Oscar.PubSub, "canvases")
   end
 
+  @doc false
   defp broadcast({:error, _reason} = error, _event), do: error
 
+  @doc false
   defp broadcast({:ok, canvas}, event) do
     Phoenix.PubSub.broadcast(Oscar.PubSub, "canvases", {event, canvas})
     {:ok, canvas}
   end
 
 
+  @doc false
   defp validate_not_nil(changeset, fields) do
     Enum.reduce(fields, changeset, fn field, changeset ->
       if get_field(changeset, field) == nil do
@@ -228,4 +228,18 @@ defmodule Oscar.Canvas do
       end
     end)
   end
+
+  @doc false
+  defp validate_or(changeset, fields) do
+    if Enum.any?(fields, &get_field(changeset, &1)) do
+      changeset
+    else
+      fields |> Enum.reduce(changeset, fn field, changeset ->
+        add_error(changeset, field, "One of these fields must be present: #{inspect fields}")
+      end)
+    end
+  end
+
+
+
 end
