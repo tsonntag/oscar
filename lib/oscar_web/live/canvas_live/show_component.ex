@@ -7,7 +7,7 @@ defmodule OscarWeb.CanvasLive.ShowComponent do
     <div id={"canvas-#{@canvas.id}"}>
       <h1><%= @canvas.id %></h1>
       <p>
-      <pre><%= @canvas.content%></pre>
+      <pre style='border: none'><%= @canvas.content%></pre>
       </p>
       <p>
         <span><%= live_redirect "Back", to: Routes.canvas_index_path(@socket, :index) %></span>
