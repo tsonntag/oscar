@@ -3,15 +3,12 @@ defmodule OscarWeb.CanvasControllerTest do
 
   import Oscar.CanvasFixtures
 
-  alias Oscar.Canvas
-
   @create_attrs %{
-    content: ""
+    width: 1, height: 2
   }
-  @update_attrs %{
-    content: "some updated content"
+  @invalid_attrs %{
+    width: 1
   }
-  @invalid_attrs %{content: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -38,26 +35,6 @@ defmodule OscarWeb.CanvasControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.canvas_path(conn, :create), canvas: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
-
-  describe "update canvas" do
-    setup [:create_canvas]
-
-    test "renders canvas when data is valid", %{conn: conn, canvas: %Canvas{id: id} = canvas} do
-      conn = put(conn, Routes.canvas_path(conn, :update, canvas), canvas: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, Routes.canvas_path(conn, :show, id))
-
-      assert %{
-               "id" => ^id,
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, canvas: canvas} do
-      conn = put(conn, Routes.canvas_path(conn, :update, canvas), canvas: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end

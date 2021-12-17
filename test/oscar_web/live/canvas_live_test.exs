@@ -4,10 +4,6 @@ defmodule OscarWeb.CanvasLiveTest do
   import Phoenix.LiveViewTest
   import Oscar.CanvasFixtures
 
-  @create_attrs %{content: "some content"}
-  @update_attrs %{content: "some updated content"}
-  @invalid_attrs %{content: nil}
-
   defp create_canvas(_) do
     canvas = canvas_fixture()
     %{canvas: canvas}
@@ -18,9 +14,8 @@ defmodule OscarWeb.CanvasLiveTest do
 
     test "lists all canvases", %{conn: conn, canvas: canvas} do
       {:ok, _index_live, html} = live(conn, Routes.canvas_index_path(conn, :index))
-
       assert html =~ "Listing Canvases"
-      assert html =~ canvas.content
+      assert html =~ "href=\"/canvas/#{canvas.id}"
     end
 
   end
