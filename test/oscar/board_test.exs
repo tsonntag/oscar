@@ -198,36 +198,12 @@ defmodule Oscar.BoardTest do
       """
     end
 
-    test "fixture 3 a" do
-      actual =
-      """
-                    .......
-                    .......
-      oooooooo      .......
-      o      o      .......
-      o    xxxxx    .......
-      oooooxxxxx           \
-      """
-      |> Board.from_string()
-      |> Board.add_flood({ 0, 0 }, "-")
-      |> Board.to_string()
-      assert actual ==
-      """
-      --------------.......
-      --------------.......
-      oooooooo------.......
-      o      o------.......
-      o    xxxxx----.......
-      oooooxxxxx-----------\
-      """
-    end
-
     test "add_flood on empty board" do
       actual =
       """
           
          A
-       A A
+      A  A
       A   \
       """
       |> Board.from_string()
@@ -392,6 +368,27 @@ defmodule Oscar.BoardTest do
           xxxxx           \
      """
     end
+
+    test "fixture 3 a" do
+      actual =
+     """
+                 .......
+                 .......
+     oooooo      .......
+     oooxxxxx           \
+     """
+     |> Board.from_string()
+     |> Board.add_flood({ 0, 0 }, "-")
+     |> Board.to_string()
+      assert actual ==
+     """
+     ------------.......
+     ------------.......
+     oooooo------.......
+     oooxxxxx-----------\
+     """
+    end
+
 
     test "fixture 3" do
       actual = Board.new({ 21, 8 })

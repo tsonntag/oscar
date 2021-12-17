@@ -54,11 +54,17 @@ defmodule Oscar.CanvasTest do
       assert %Ecto.Changeset{} = Canvas.change(canvas)
     end
 
-
-    test "rect/2 creates rect" do
-      %Canva = Canvas.add_rect(%Canvas{content: "XXX\nXXX\n"}, Point{x: 0, y: 0}, %Point{x: 0, y: 0}, "X", "O")
-      assert "", canvase
+    test "new/2 with valid data creates a canvas" do
+      valid_attrs = %{"width" => 3, "height" => 4 }
+      assert {:ok, %Canvas{} = canvas} == Canvas.create(valid_attrs)
     end
+
+#   test "rect/2 creates rect" do
+#     canvas = Canvas.canvas_fixture("width" => )
+#     {:ok, %Canvas{content: content}} = Canvas.add_rect(%Canvas{content: "....\n....\n...."},
+#       %{"x" => 1, "y" => 1, "width" =>  1, "height" => 2, "fill" => "X"})
+#     assert content == ".X..\n.X..\n...."
+#   end
 
   end
 end

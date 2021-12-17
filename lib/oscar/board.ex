@@ -1,7 +1,12 @@
 defmodule Oscar.Board do
 
-  def new( { width , height }, fill \\ " ") do
+  def new (%{ width: width, height: height } = args ) do
+    fill = Map.get(args, :fill, " ")
     List.duplicate(fill, width) |> List.duplicate(height)
+  end
+
+  def new({width, height}, fill \\ " ") do
+    new(%{ width: width, height: height, fill: fill })
   end
 
   def to_string(board) do
@@ -13,18 +18,6 @@ defmodule Oscar.Board do
   def from_string(s) do
     s |> String.split("\n") |> Enum.map(&String.graphemes/1)
   end
-
-  # remove trailing nils and replace remaining nils with " "
-# defp line_to_string(line) do
-#   {_, not_nil} = line
-#   |> Enum.reverse
-#   |> Enum.split_while(&is_nil/1)
-
-#   not_nil
-#   |> Enum.reverse
-#   |> Enum.map(fn c -> if is_nil(c), do: " ", else: c end)
-#   |> Enum.join("")
-# end
 
   def width(board), do: Enum.at(board, 0, []) |> Enum.count()
 
@@ -86,35 +79,21 @@ defmodule Oscar.Board do
   end
 
   def add_flood(board, { x, y } = point, char) when x >= 0 and y >= 0 and is_binary(char) do
-    to_be_flooded(board, point, MapSet.new([point]))
-    |> IO.inspect(label: "ADD FLOOD")
-    |> set_points(board, char)
+    flood(board, point, get_char(board, point), char)
   end
 
   def add_flood(board, _point, _char), do: board
 
   # private
 
-  defp to_be_flooded(board, point, found) do
-#   found |> IO.inspect(label: "\nFOUND")
-    char = get_char(board, point)
-#   |> IO.inspect(label: "CHAR")
+  defp flood(board, point, old_char, new_char, done \\ MapSet.new()) do
+    board = board |> set_char(point, new_char)
+    done = MapSet.put(done, point)
 
-    neighbours_ = point
-#   |> IO.inspect(label: "POINT")
+    point
     |> neighbours()
-#   |> IO.inspect(label: "NB")
-    |> Enum.filter(fn p ->
-      !MapSet.member?(found, p)
-      && get_char(board, p) == char
-      && on_board?(board, p)
-    end)
-    |> Enum.reduce(found, fn nb, f -> MapSet.put(f, nb) end)
-    |> IO.inspect(label: "FILTERED")
-    |> Enum.flat_map(&to_be_flooded(board, &1, found ))
-    |> MapSet.new()
-#   |> IO.inspect(label: "NEIGHBORS ->")
-    MapSet.put(neighbours_ , point)
+    |> Enum.filter(fn p -> on_board?(board, p) && get_char(board, p) == old_char  && !MapSet.member?(done, p)end)
+    |> Enum.reduce(board, fn p, board_ -> flood(board_, p, old_char, new_char, done) end)
   end
 
   defp set_points(points, board, char) do

@@ -26,17 +26,43 @@ defmodule Oscar.Canvas do
   end
 
   @doc false
-  def rect_changeset( attrs) do
-    types = %{x: :integer, y: :integer, width: :integer, height: :integer, fill: :string, outline: :string}
+  defp changeset_for_new( attrs) do
+    types = %{width: :integer, height: :integer, fill: :string}
     data = %{}
-    cast({data, types}, attrs, [:x, :y, :width, :height, :fill, :outline])
+    cast({data, types}, attrs, [:width, :height, :fill])
+    |> validate_required([:width, :height])
+    |> validate_length(:fill, is: 1)
   end
 
   @doc false
-  def flood_changeset( attrs) do
+  defp changeset_for_add_flood( attrs) do
     types = %{x: :integer, y: :integer, fill: :string}
     data = %{}
     cast({data, types}, attrs, [:x, :y, :fill])
+    |> validate_required([:x, :y, :fill])
+    |> validate_length(:fill, is: 1)
+  end
+
+  @doc false
+  defp changeset_for_add_rect( attrs) do
+    types = %{x: :integer, y: :integer, width: :integer, height: :integer, fill: :string, outline: :string}
+    data = %{}
+    cast({data, types}, attrs, [:x, :y, :width, :height, :fill, :outline])
+    |> validate_required([:x, :y, :width, :height])
+    |> validate_or([:fill , :outline])
+    |> validate_length(:outline, is: 1)
+    |> validate_length(:fill, is: 1)
+  end
+
+  @doc false
+  defp validate_or(changeset, fields) do
+    if Enum.any?(fields, &get_field(changeset, &1)) do
+      changeset
+    else
+      fields |> Enum.reduce(changeset, fn field, changeset ->
+        add_error(changeset, field, "One of these fields must be present: #{inspect fields}")
+      end)
+    end
   end
 
 
@@ -74,14 +100,14 @@ defmodule Oscar.Canvas do
 
   ## Examples
 
-  iex> new(canvas, %{"width" => 2, height; 3, "fill" => "F"})
+  iex> new(canvas, %{"width" => 2, "height" => 3, "fill" => "F"})
      %Canvas{content: "FF\nFF\nFF"}
   """
-  def new(%{"width" =>  width, "height" => height} = attrs) do
-    fill = Map.get(attrs, "fill", " ")
-    fill = if String.length(fill) == 1, do: fill, else: " "
-
-    content = Board.new({to_integer(width), to_integer(height)}, fill)
+  def new(attrs) do
+    content = attrs
+    |> changeset_for_new()
+    |> apply_changes()
+    |> Board.new()
     |> Board.to_string
 
     %Canvas{content: content }
@@ -93,8 +119,8 @@ defmodule Oscar.Canvas do
 
   ## Examples
 
-      iex> create_rect(canvas, %{"width" =>  width, height; height, "fill" => fill})
-      {:ok, %Canvas{}}
+      iex> create_rect(canvas, %{"width" =>  2, height; 3, "fill" => "F})
+      {:ok, %Canvas{content: "FF\nFF\nFF"}}
 
       iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
@@ -114,19 +140,16 @@ defmodule Oscar.Canvas do
 
   ## Examples
 
-  iex> add_rect(canvas, %{"x" => x, y; y, "width" =>  width, "height" => height, "fill" => fill, "outline" => outline})
+  iex> add_rect(canvas, %{"x" => x, "y" => y, "width" =>  width, "height" => height, "fill" => fill, "outline" => outline})
   {:ok, %Canvas{}}
   """
   def add_rect(%Canvas{content: content} = canvas, params) do 
-    rect_params = params |> rect_changeset() |> apply_changes()
+    rect_params = params |> changeset_for_add_rect() |> apply_changes()
 
     content = content
     |> Board.from_string()
-    |> IO.inspect(label: "FROM")
     |> Board.add_rect(rect_params)
-    |> IO.inspect(label: "RECT")
     |> Board.to_string()
-    |> IO.inspect(label: "TO")
 
     canvas
     |> Canvas.update(%{ content: content})
@@ -141,7 +164,7 @@ defmodule Oscar.Canvas do
   {:ok, %Canvas{}}
   """
   def add_flood(%Canvas{content: content} = canvas, params) do
-    flood_params = params |> flood_changeset() |> apply_changes()
+    flood_params = params |> changeset_for_add_flood() |> apply_changes()
 
     content = content
     |> Board.from_string()
@@ -152,18 +175,7 @@ defmodule Oscar.Canvas do
     |> Canvas.update(%{ content: content })
   end
 
-  @doc """
-  Updates a canvas.
-
-  ## Examples
-
-      iex> update(canvas, %{field: new_value})
-      {:ok, %Canvas{}}
-
-      iex> update(canvas, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
+  @doc false
   def update(%Canvas{} = canvas, attrs) do
     canvas
     |> changeset(attrs)
@@ -195,6 +207,7 @@ defmodule Oscar.Canvas do
   end
 
   defp broadcast({:error, _reason} = error, _event), do: error
+
   defp broadcast({:ok, canvas}, event) do
     Phoenix.PubSub.broadcast(Oscar.PubSub, "canvases", {event, canvas})
     {:ok, canvas}
