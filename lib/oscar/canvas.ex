@@ -219,7 +219,7 @@ defmodule Oscar.Canvas do
   end
 
 
-  def validate_not_nil(changeset, fields) do
+  defp validate_not_nil(changeset, fields) do
     Enum.reduce(fields, changeset, fn field, changeset ->
       if get_field(changeset, field) == nil do
         add_error(changeset, field, "nil")
