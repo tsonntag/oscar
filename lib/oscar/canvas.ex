@@ -4,9 +4,6 @@ defmodule Oscar.Canvas do
   import Ecto.Query, warn: false
   alias Oscar.{Repo, Canvas, Board}
 
-  import String, only: [to_integer: 1]
-
-
   schema "canvases" do
     field :content, :string
 
@@ -22,11 +19,12 @@ defmodule Oscar.Canvas do
   @doc false
   def changeset(canvas, attrs) do
     canvas
-    |> cast(attrs, [:content])
+    |> cast(attrs, [:content], empty_values: [nil] )
+    |> validate_not_nil([:content])
   end
 
   @doc false
-  defp changeset_for_new( attrs) do
+  def changeset_for_new(attrs) do
     types = %{width: :integer, height: :integer, fill: :string}
     data = %{}
     cast({data, types}, attrs, [:width, :height, :fill])
@@ -96,26 +94,7 @@ defmodule Oscar.Canvas do
   def get!(id), do: Repo.get!(Canvas, id)
 
   @doc """
-  Creates a canvas with width, height and an optional fill character.
-
-  ## Examples
-
-  iex> new(canvas, %{"width" => 2, "height" => 3, "fill" => "F"})
-     %Canvas{content: "FF\nFF\nFF"}
-  """
-  def new(attrs) do
-    content = attrs
-    |> changeset_for_new()
-    |> apply_changes()
-    |> Board.new()
-    |> Board.to_string
-
-    %Canvas{content: content }
-  end
-
-
-  @doc """
-  Creates a canvas with content
+  Creates a canvas from width and height 
 
   ## Examples
 
@@ -127,9 +106,29 @@ defmodule Oscar.Canvas do
 
   """
   def create(attrs \\ %{}) do
-    attrs
-    |> new()
-    |> Canvas.changeset(attrs)
+    cs = changeset_for_new(attrs)
+    if cs.valid? do
+      content = cs |> apply_changes() |> Board.new() |> Board.to_string() 
+      create_content(%{content: content})
+     else
+       { :error, cs }
+    end
+  end
+
+  @doc """
+  Creates a canvas with content
+
+  ## Examples
+
+  iex> create_rect(canvas, %{"content" => "AA"})
+  {:ok, %Canvas{content: "AA"}}
+
+  iex> create(%{field: bad_value})
+  {:error, %Ecto.Changeset{}}
+
+  """
+  def create_content(attrs \\ %{}) do
+    Canvas.changeset(%Canvas{}, attrs)
     |> Repo.insert()
     |> broadcast(:canvas_created)
   end
@@ -143,16 +142,19 @@ defmodule Oscar.Canvas do
   iex> add_rect(canvas, %{"x" => x, "y" => y, "width" =>  width, "height" => height, "fill" => fill, "outline" => outline})
   {:ok, %Canvas{}}
   """
-  def add_rect(%Canvas{content: content} = canvas, params) do 
-    rect_params = params |> changeset_for_add_rect() |> apply_changes()
+  def add_rect(%Canvas{content: content} = canvas, attrs) do 
+    cs = changeset_for_add_rect(attrs)
 
-    content = content
-    |> Board.from_string()
-    |> Board.add_rect(rect_params)
-    |> Board.to_string()
+    if cs.valid? do
+      content = content
+      |> Board.from_string()
+      |> Board.add_rect(apply_changes(cs))
+      |> Board.to_string()
 
-    canvas
-    |> Canvas.update(%{ content: content})
+      Canvas.update(canvas, %{content: content})
+    else
+      { :error, cs }
+    end
   end
 
   @doc """
@@ -163,22 +165,25 @@ defmodule Oscar.Canvas do
   iex> add_flood(canvas, %{"x" => x, "y" => y, "fill" => fill})
   {:ok, %Canvas{}}
   """
-  def add_flood(%Canvas{content: content} = canvas, params) do
-    flood_params = params |> changeset_for_add_flood() |> apply_changes()
+  def add_flood(%Canvas{content: content} = canvas, attrs) do
+    cs = changeset_for_add_flood(attrs)
 
-    content = content
-    |> Board.from_string()
-    |> Board.add_flood(flood_params)
-    |> Board.to_string()
+    if cs.valid? do
+      content = content
+      |> Board.from_string()
+      |> Board.add_flood(apply_changes(cs))
+      |> Board.to_string()
 
-    canvas
-    |> Canvas.update(%{ content: content })
+      Canvas.update(canvas, %{content: content})
+    else
+      { :error, cs }
+    end
   end
 
   @doc false
   def update(%Canvas{} = canvas, attrs) do
     canvas
-    |> changeset(attrs)
+    |> Canvas.changeset(attrs)
     |> Repo.update()
     |> broadcast(:canvas_updated)
   end
@@ -211,5 +216,16 @@ defmodule Oscar.Canvas do
   defp broadcast({:ok, canvas}, event) do
     Phoenix.PubSub.broadcast(Oscar.PubSub, "canvases", {event, canvas})
     {:ok, canvas}
+  end
+
+
+  def validate_not_nil(changeset, fields) do
+    Enum.reduce(fields, changeset, fn field, changeset ->
+      if get_field(changeset, field) == nil do
+        add_error(changeset, field, "nil")
+      else
+        changeset
+      end
+    end)
   end
 end

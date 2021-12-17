@@ -6,8 +6,6 @@ defmodule Oscar.CanvasTest do
 
     import Oscar.CanvasFixtures
 
-    @invalid_attrs %{content: nil}
-
     test "listes/0 returns all canvases" do
       canvas = canvas_fixture()
       assert Canvas.list() == [canvas]
@@ -19,28 +17,81 @@ defmodule Oscar.CanvasTest do
     end
 
     test "create/1 with valid data creates a canvas" do
-      valid_attrs = %{content: "some content"}
-
+      valid_attrs = %{"width" => 2, "height" => 3 }
       assert {:ok, %Canvas{} = canvas} = Canvas.create(valid_attrs)
-      assert canvas.content == "some content"
+      assert canvas.content == "  \n  \n  "
+
+      valid_attrs = %{"width" => 2, "height" => 3, "fill" => "X" }
+      assert {:ok, %Canvas{} = canvas} = Canvas.create(valid_attrs)
+      assert canvas.content == "XX\nXX\nXX"
     end
 
     test "create/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Canvas.create(@invalid_attrs)
+      invalid_attrs = %{"width" => 2, "hght" => 3 }
+      assert {:error, %Ecto.Changeset{}} = Canvas.create(invalid_attrs)
+
+      invalid_attrs = %{"height" => 3 }
+      assert {:error, %Ecto.Changeset{}} = Canvas.create(invalid_attrs)
+
+      invalid_attrs = %{"width" => 2, "height" => 3, "fill" => "XX" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.create(invalid_attrs)
     end
+
+    test "add_rect/1 with invalid data returns error changeset" do
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"y" => 1, "width" => 3, "height" => 4, "fill" => "X" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_rect(canvas, invalid_attrs)
+
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"x" => 1, "xy" => 1, "width" => 3, "height" => 4, "fill" => "X" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_rect(canvas, invalid_attrs)
+
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"x" => 1, "y" => 1, "w" => 3, "height" => 4, "fill" => "X" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_rect(canvas, invalid_attrs)
+
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"x" => 1, "y" => 1, "width" => 3, "h" => 4, "fill" => "X" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_rect(canvas, invalid_attrs)
+
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"x" => 1, "y" => 1, "width" => 3, "height" => 4, "fill" => "XX" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_rect(canvas, invalid_attrs)
+     end
+
+    test "add_rect/1 with valid data updates a canvas" do
+      canvas = canvas_fixture(%{content: "...\n...\n..."})
+      valid_attrs = %{"x" => 0, "y" => 0, "width" => 2, "height" => 2, "fill" => "X" }
+      assert {:ok, %Canvas{} = canvas} = Canvas.add_rect(canvas, valid_attrs)
+      assert canvas.content == "XX.\nXX.\n..."
+     end
+
+    test "add_flood/1 with invalid data returns error changeset" do
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"y" => 1, "fill" => "X" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_flood(canvas, invalid_attrs)
+
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"x" => 1, "xy" => 1, "fill" => "X" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_flood(canvas, invalid_attrs)
+
+      canvas = canvas_fixture(%{content: "...\n..."})
+      invalid_attrs = %{"x" => 1, "y" => 1, "fill" => "XX" }
+      assert {:error, %Ecto.Changeset{}} = Canvas.add_flood(canvas, invalid_attrs)
+     end
+
+    test "add_flood/1 with valid data updates a canvas" do
+      canvas = canvas_fixture(%{content: "...\nXXX\nXXX"})
+      valid_attrs = %{"x" => 1, "y" => 0, "fill" => "A" }
+      assert {:ok, %Canvas{} = canvas} = Canvas.add_flood(canvas, valid_attrs)
+      assert canvas.content == "AAA\nXXX\nXXX"
+     end
 
     test "update/2 with valid data updates the canvas" do
       canvas = canvas_fixture()
-      update_attrs = %{content: "some updated content"}
-
-      assert {:ok, %Canvas{} = canvas} = Canvas.update(canvas, update_attrs)
+      valid_attrs = %{content: "some updated content"}
+      assert {:ok, %Canvas{} = canvas} = Canvas.update(canvas, valid_attrs)
       assert canvas.content == "some updated content"
-    end
-
-    test "update/2 with invalid data returns error changeset" do
-      canvas = canvas_fixture()
-      assert {:error, %Ecto.Changeset{}} = Canvas.update(canvas, @invalid_attrs)
-      assert canvas == Canvas.get!(canvas.id)
     end
 
     test "delete/1 deletes the canvas" do
@@ -48,23 +99,6 @@ defmodule Oscar.CanvasTest do
       assert {:ok, %Canvas{}} = Canvas.delete(canvas)
       assert_raise Ecto.NoResultsError, fn -> Canvas.get!(canvas.id) end
     end
-
-    test "change/1 returns a canvas changeset" do
-      canvas = canvas_fixture()
-      assert %Ecto.Changeset{} = Canvas.change(canvas)
-    end
-
-    test "new/2 with valid data creates a canvas" do
-      valid_attrs = %{"width" => 3, "height" => 4 }
-      assert {:ok, %Canvas{} = canvas} == Canvas.create(valid_attrs)
-    end
-
-#   test "rect/2 creates rect" do
-#     canvas = Canvas.canvas_fixture("width" => )
-#     {:ok, %Canvas{content: content}} = Canvas.add_rect(%Canvas{content: "....\n....\n...."},
-#       %{"x" => 1, "y" => 1, "width" =>  1, "height" => 2, "fill" => "X"})
-#     assert content == ".X..\n.X..\n...."
-#   end
 
   end
 end

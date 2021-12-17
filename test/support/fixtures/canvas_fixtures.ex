@@ -13,7 +13,8 @@ defmodule Oscar.CanvasFixtures do
       |> Enum.into(%{
         content: "some content",
       })
-      |> Oscar.Canvas.create()
+      |> Oscar.Canvas.create_content()
     canvas
   end
+  
 end
