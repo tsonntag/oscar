@@ -7,9 +7,10 @@ Oscar is a web server which provides the following drawing operations
 - *width* and *height*.
 - an optional *fill* character. (default: ' ')
  
+
     POST localhost:4000/api/canvas
-          Content-Type: application/json"
-          Data: {"canvas": { "width": *width*, "height": *height*, "fill": *fill*}
+         Content-Type: application/json"
+         Data: {"canvas": { "width": *width*, "height": *height*, "fill": *fill*}
 
 *Example*:
 
@@ -38,16 +39,16 @@ where content is a string representing the canvas with *id*
 - One of either *fill* or *outline* should always be present.
 
     PUT localhost:4000/api/canvas/:id/rect
-    Content-Type: application/json" 
-    Data: {"canvas": { "x": *x*, "y": *y*, "width": *width*, "height": *height*, "fill": *fill*, "outline": *outline*}"
+        Content-Type: application/json" 
+        Data: {"canvas": { "x": *x*, "y": *y*, "width": *width*, "height": *height*, "fill": *fill*, "outline": *outline*}
 
 ##### Example:
 
-    `curl -X PUT --data '{"canvas": {"x": 0, "y": 0, "width": 3, "height": 3, "fill": "X", "outline": "O"}}'' -H "Content-Type: application/json" localhost:4000/api/canvas/19/rect`
+    curl -X PUT --data '{"canvas": {"x": 0, "y": 0, "width": 3, "height": 3, "fill": "X", "outline": "O"}}'' -H "Content-Type: application/json" localhost:4000/api/canvas/19/rect
 
 returns:
 
-    `{"data":{"content":"OOO..\nOXO..\nOXO..\nOOO..","id":19}}`
+    {"data":{"content":"OOO..\nOXO..\nOXO..\nOOO..","id":19}}
 
 where content is a string representing the canvas with *id*
 
