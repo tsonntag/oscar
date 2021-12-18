@@ -7,7 +7,5 @@ defmodule Oscar.Repo.Migrations.CreateCanvases do
 
       timestamps()
     end
-
-    create_index(:canvases, [:uuid], unique: true)
   end
 end

@@ -1,1 +1,3 @@
-curl localhost:4000/api/canvas/$1
+host=${PHX_HOST-'localhost'}
+port=${PORT-'4000'}
+curl $host:$port/api/canvas

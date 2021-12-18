@@ -109,6 +109,21 @@ defmodule Oscar.Canvas do
   """
   def get!(id), do: Repo.get!(Canvas, id)
 
+
+  @doc """
+  Gets a single canvas.
+
+  Raises `Ecto.NoResultsError` if the Canvas does not exist.
+
+  ## Examples
+
+  iex> get(123)
+  %Canvas{}
+
+  """
+  def get(id), do: Repo.get(Canvas, id)
+
+
   @doc """
   Creates a canvas from width and height and with optional fill (default is " ")
 
