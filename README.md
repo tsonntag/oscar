@@ -126,7 +126,7 @@ where content represents the canvas with *id*:
     curl localhost:4000/api/canvas
     
     
-### Delete a canvases:
+### Delete a canvas:
 
     DELETE localhost:4000/api/canvas/42
 
