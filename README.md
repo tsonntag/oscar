@@ -7,14 +7,19 @@
 - *width* and *height*.
 - an optional *fill* character. (default: ' ')
  
-  POST localhost:4000/api/canvas
-  Content-Type: application/json" 
-  Content: {"canvas": { "width": *width*, 
-                        "height": *height*, 
-                        "fill": *fill*
-           }"
+```POST localhost:4000/api/canvas
 
-Example:
+ Content-Type: application/json"
+
+ Content: {"canvas": { "width": *width*,
+
+                        "height": *height*,
+
+                        "fill": *fill*
+
+           }"```
+
+*Example*:
 
 `curl -X POST --data 'canvas: {"width": 5, "height": 4, "fill": "." }}' -H "Content-Type: application/json" localhost:4000/api/canvas`
 
