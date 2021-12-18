@@ -1,13 +1,13 @@
 # Oscar - an ASCII Art Drawning Service
 
-Oscar is a web server which provides the following drawing operations
+Oscar is a web service providing the following drawing operations:
 
 #### Create a new canvas parameterised with...
 
 - *width* and *height*.
-- an optional *fill* character. (default: ' ')
+- an optional *fill* character (default: ' ')
  
-
+.
     POST localhost:4000/api/canvas
          Content-Type: application/json"
          Data: {"canvas": { "width": *width*, "height": *height*, "fill": *fill*}
