@@ -49,6 +49,8 @@ defmodule Oscar.Canvas do
     data = %{}
     cast({data, types}, attrs, [:width, :height, :fill])
     |> validate_required([:width, :height])
+    |> validate_number(:width, greater_than_or_equal_to: 1)
+    |> validate_number(:height, greater_than_or_equal_to: 1)
     |> validate_length(:fill, is: 1)
   end
 
@@ -58,6 +60,8 @@ defmodule Oscar.Canvas do
     data = %{}
     cast({data, types}, attrs, [:x, :y, :fill])
     |> validate_required([:x, :y, :fill])
+    |> validate_number(:x, greater_than_or_equal_to: 0)
+    |> validate_number(:y, greater_than_or_equal_to: 0)
     |> validate_length(:fill, is: 1)
   end
 
@@ -67,6 +71,10 @@ defmodule Oscar.Canvas do
     data = %{}
     cast({data, types}, attrs, [:x, :y, :width, :height, :fill, :outline])
     |> validate_required([:x, :y, :width, :height])
+    |> validate_number(:x, greater_than_or_equal_to: 0)
+    |> validate_number(:y, greater_than_or_equal_to: 0)
+    |> validate_number(:width, greater_than_or_equal_to: 1)
+    |> validate_number(:height, greater_than_or_equal_to: 1)
     |> validate_or([:fill , :outline])
     |> validate_length(:outline, is: 1)
     |> validate_length(:fill, is: 1)

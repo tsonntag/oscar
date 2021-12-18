@@ -24,8 +24,8 @@ defmodule OscarWeb.Router do
   scope "/api", OscarWeb do
      pipe_through :api
      resources "/canvas", CanvasController, except: [:new, :edit, :update]
-     put "/canvas/:id/add_rect",  CanvasController, :add_rect
-     put "/canvas/:id/flood_fill", CanvasController, :flood_fill
+     put "/canvas/:id/rect",  CanvasController, :add_rect
+     put "/canvas/:id/fill", CanvasController, :flood_fill
   end
 
   # Enables LiveDashboard only for development
