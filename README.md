@@ -1,4 +1,4 @@
-# Oscar - an ASCII Art Drawning Service
+# Oscar - ASCII Art Drawning Service
 
 Oscar is a web service providing the following drawing operations:
 
@@ -123,7 +123,7 @@ where content represents the canvas with *id*:
 
 ##### Example:
 
-     curl localhost:4000/api/canvas
+    curl localhost:4000/api/canvas
 
  
 #### To start the server:
@@ -133,4 +133,5 @@ where content represents the canvas with *id*:
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
   
 
-Now you can visit [`localhost:4000/canvas`](http://localhost:4000/canvas) from your browser.
+Now you can use [`localhost:4000/canvas/api`](http://localhost:4000/canvas/api) for the web service
+or visit [`localhost:4000/canvas`](http://localhost:4000/canvas) in your browser.
