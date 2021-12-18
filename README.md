@@ -1,43 +1,31 @@
-# Oscar - an ASCII Canvas Service
+# Oscar - an ASCII Art Drawning Service
 
-### Oscar implements the following drawing operations
+Oscar is a web server which provides the following drawing operations
 
 #### Create a new canvas parameterised with...
 
 - *width* and *height*.
 - an optional *fill* character. (default: ' ')
  
-```POST localhost:4000/api/canvas
-
- Content-Type: application/json"
-
- Content: {"canvas": { "width": *width*,
-
-                        "height": *height*,
-
-                        "fill": *fill*
-
-           }"```
+     POST localhost:4000/api/canvas
+          Content-Type: application/json"
+          Data: {"canvas": { "width": *width*, "height": *height*, "fill": *fill*}"
 
 *Example*:
 
-`curl -X POST --data 'canvas: {"width": 5, "height": 4, "fill": "." }}' -H "Content-Type: application/json" localhost:4000/api/canvas`
+     `curl -X POST --data 'canvas: {"width": 5, "height": 4, "fill": "." }}' -H "Content-Type: application/json" localhost:4000/api/canvas`
 
 returns:
 
-`{"data":{"content":"...\n...","id":19}}`
+    `{"data":{"content":"...\n...","id":19}}`
 
 where content is a string representing the canvas with *id*
 
-  .....
-
-  .....
-
-  .....
-
-  .....
-
-  .....
+    .....
+    .....
+    .....
+    .....
+    .....
 
 
 
@@ -50,28 +38,24 @@ where content is a string representing the canvas with *id*
 - an optional *outline* character.
 - One of either *fill* or *outline* should always be present.
 
-  PUT localhost:4000/api/canvas/:id/rect
-  Content-Type: application/json" 
-  Content: {"canvas": { "x": *x*,
-                        "y": *y*, 
-                        "width": *width*, 
-                        "height": *height*, 
-                        "fill": *fill*,
-                        "outline": *outline*,
-         }"
+    PUT localhost:4000/api/canvas/:id/rect
+    Content-Type: application/json" 
+    Data: {"canvas": { "x": *x*, "y": *y*, "width": *width*, "height": *height*, "fill": *fill*, "outline": *outline*}"
 
 ##### Example:
 
-`curl -X PUT --data '{"canvas": {"x": 0, "y": 0, "width": 3, "height": 3, "fill": "X", "outline": "O"}}'' -H "Content-Type: application/json" localhost:4000/api/canvas/19/rect`
+    `curl -X PUT --data '{"canvas": {"x": 0, "y": 0, "width": 3, "height": 3, "fill": "X", "outline": "O"}}'' -H "Content-Type: application/json" localhost:4000/api/canvas/19/rect`
 
-`{"data":{"content":"OOO..\nOXO..\nOXO..\nOOO..","id":19}}`
+returns:
 
-where content represents the canvas
+    `{"data":{"content":"OOO..\nOXO..\nOXO..\nOOO..","id":19}}`
 
-  OOO..
-  OXO..
-  OOO..
-  .....
+where content is a string representing the canvas with *id*
+
+    OOO..
+    OXO..
+    OOO..
+    .....
 
 
 
