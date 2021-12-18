@@ -2,11 +2,11 @@
 
 Oscar is a web service providing the following drawing operations:
 
-### Create a new canvas
+### Create a canvas:
 
     POST localhost:4000/api/canvas
          Content-Type: application/json"
-         Data: {"canvas": { "width": <width>, "height": <height>, "fill": <fill*}
+         Data: {"canvas": { "width": <width>, "height": <height>, "fill": <fill>}}
          
 with parameters:
 - *width* and *height*
@@ -14,7 +14,7 @@ with parameters:
  
 ##### Example:
 
-    curl -X POST --data 'canvas: {"width": 5, "height": 4, "fill": "." }}' -H "Content-Type: application/json" localhost:4000/api/canvas`
+    curl -X POST --data 'canvas: {"width": 5, "height": 4, "fill": "." }}' -H "Content-Type: application/json" localhost:4000/api/canvas
 
 returns:
 
@@ -30,11 +30,11 @@ where content is a string representing the canvas with *id*:
 
 
 
-### Create a rectangular
+### Draw a rectangular:
 
     PUT localhost:4000/api/canvas/:id/rect
         Content-Type: application/json" 
-        Data: {"canvas": { "x": <x>, "y>: <y>, "width": <width>, "height": <height>, "fill": <fill>, "outline": <outline>}
+        Data: {"canvas": { "x": <x>, "y>: <y>, "width": <width>, "height": <height>, "fill": <fill>, "outline": <outline>}}
 
 with parameters:
 - *id* of the canvas
@@ -65,7 +65,7 @@ where content is a string representing the canvas with *id*:
 
     PUT localhost:4000/api/canvas/:id/fill
         Content-Type: application/json" 
-        Data: {"canvas": { "x": <x>, "y>: <y>, "fill": <fill>}
+        Data: {"canvas": { "x": <x>, "y>: <y>, "fill": <fill>}}
 
 
 with parameters:
@@ -128,9 +128,10 @@ where content represents the canvas with *id*:
  
 #### To start the server:
 
+  * Install an start a Postgresql database
   * Clone this repository
   * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+  * Start the server with `mix phx.server` or inside IEx with `iex -S mix phx.server`
   
 
 Now you can use [`localhost:4000/canvas/api`](http://localhost:4000/canvas/api) for the web service
