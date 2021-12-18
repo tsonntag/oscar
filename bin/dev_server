@@ -1,0 +1,1 @@
+PORT=4000 PHX_HOST=localhost MIX_ENV=dev mix phx.server
