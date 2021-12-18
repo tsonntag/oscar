@@ -2,7 +2,7 @@
 
 Oscar is a web service providing the following drawing operations:
 
-#### Create a new canvas
+### Create a new canvas
 
     POST localhost:4000/api/canvas
          Content-Type: application/json"
@@ -30,7 +30,7 @@ where content is a string representing the canvas with *id*:
 
 
 
-#### Create a rectangular
+### Create a rectangular
 
     PUT localhost:4000/api/canvas/:id/rect
         Content-Type: application/json" 
@@ -61,7 +61,7 @@ where content is a string representing the canvas with *id*:
 
 
 
-#### A Flood Fill operation parameterised with…
+### A Flood Fill operation
 
     PUT localhost:4000/api/canvas/:id/fill
         Content-Type: application/json" 
@@ -95,7 +95,7 @@ where content represents the canvas with *id*:
     FFF..
 
 
-#### Read a canvas:
+### Show a canvas:
 
     GET localhost:4000/api/canvas/:id
 
@@ -115,7 +115,8 @@ where content represents the canvas with *id*:
     FXF..
     FFF..
 
-#### List all canvases:
+
+### List all canvases:
 
     GET localhost:4000/api/canvas
 
