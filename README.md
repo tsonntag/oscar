@@ -7,20 +7,19 @@ Oscar is a web server which provides the following drawing operations
 - *width* and *height*.
 - an optional *fill* character. (default: ' ')
  
-     `POST localhost:4000/api/canvas
+     POST localhost:4000/api/canvas
            Content-Type: application/json"
-           Data: {"canvas": { "width": *width*, "height": *height*, "fill": *fill*}"`
+           Data: {"canvas": { "width": *width*, "height": *height*, "fill": *fill*}
 
 *Example*:
 
-     `curl -X POST --data 'canvas: {"width": 5, "height": 4, "fill": "." }}' -H "Content-Type: application/json" localhost:4000/api/canvas`
+    curl -X POST --data 'canvas: {"width": 5, "height": 4, "fill": "." }}' -H "Content-Type: application/json" localhost:4000/api/canvas`
 
 returns:
 
-    `{"data":{"content":"...\n...","id":19}}`
+    {"data":{"content":"...\n...","id":19}}
 
 where content is a string representing the canvas with *id*
-
     .....
     .....
     .....
