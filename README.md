@@ -124,7 +124,18 @@ where content represents the canvas with *id*:
 ##### Example:
 
     curl localhost:4000/api/canvas
+    
+    
+### Delete a canvases:
 
+    DELETE localhost:4000/api/canvas/42
+
+
+##### Example:
+
+    curl -X DELETE $host:$port/api/canvas/42
+    
+    
  
 #### To start the server:
 
