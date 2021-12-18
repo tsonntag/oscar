@@ -1,3 +1,4 @@
 host=${PHX_HOST-'localhost'}
 port=${PORT-'4000'}
-curl --data "{\"canvas\": {\"width\":\"$1\", \"height\": \"$2\", \"fill\": \"$3\" }}" -H "Content-Type: application/json" $host:$port/api/canvas
+url=https://$host:$port/api/canvas/
+curl -L --data "{\"canvas\": {\"width\":\"$1\", \"height\": \"$2\", \"fill\": \"$3\" }}" -H "Content-Type: application/json" $url

@@ -1,4 +1,5 @@
 host=${PHX_HOST-'localhost'}
 port=${PORT-'4000'}
+https://$host:$port/api/canvas
 id=$1
-curl -X PUT --data "{\"canvas\": {\"x\":\"$2\", \"y\":\"$3\", \"width\":\"$4\", \"height\":\"$5\", \"fill\":\"$6\", \"outline\":\"$7\"}}" -H "Content-Type: application/json" $host:$port/api/canvas/$id/rect
+curl -L -X PUT --data "{\"canvas\": {\"x\":\"$2\", \"y\":\"$3\", \"width\":\"$4\", \"height\":\"$5\", \"fill\":\"$6\", \"outline\":\"$7\"}}" -H "Content-Type: application/json" $url/$id/rect
