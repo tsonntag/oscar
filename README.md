@@ -7,7 +7,8 @@ Oscar is a web service providing the following drawing operations:
 - *width* and *height*.
 - an optional *fill* character (default: ' ')
  
-.
+*Example*:
+
     POST localhost:4000/api/canvas
          Content-Type: application/json"
          Data: {"canvas": { "width": *width*, "height": *height*, "fill": *fill*}
