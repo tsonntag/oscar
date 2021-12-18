@@ -10,7 +10,10 @@ defmodule OscarWeb.Endpoint do
     signing_salt: "E9RV1n+B"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options],
+                timeout: 45_000 # added for heroku
+               ]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
