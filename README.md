@@ -5,7 +5,7 @@ Oscar is a web service providing the following drawing operations:
 ### Create a canvas:
 
     POST localhost:4000/api/canvas
-         Content-Type: application/json"
+         Content-Type: application/json
          Data: {"canvas": { "width": <width>, "height": <height>, "fill": <fill>}}
          
 with parameters:
@@ -33,12 +33,12 @@ where content is a string representing the canvas with *id*:
 ### Draw a rectangular:
 
     PUT localhost:4000/api/canvas/:id/rect
-        Content-Type: application/json" 
+        Content-Type: application/json
         Data: {"canvas": { "x": <x>, "y>: <y>, "width": <width>, "height": <height>, "fill": <fill>, "outline": <outline>}}
 
 with parameters:
 - *id* of the canvas
-- Coordinates *x* and *y* for the *upper-left corner*.
+- Coordinates *x* and *y* for the upper-left corner.
 - an optional *fill* character.
 - an optional *outline* character.
 - One of either *fill* or *outline* should always be present.
@@ -61,10 +61,10 @@ where content is a string representing the canvas with *id*:
 
 
 
-### A Flood Fill operation
+### A Flood Fill operation:
 
     PUT localhost:4000/api/canvas/:id/fill
-        Content-Type: application/json" 
+        Content-Type: application/json
         Data: {"canvas": { "x": <x>, "y>: <y>, "fill": <fill>}}
 
 
