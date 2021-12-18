@@ -90,7 +90,7 @@ returns:
 where content represents the canvas with *id*:
 
     FFF..
-    FxF..
+    FXF..
     FXF..
     FFF..
 
