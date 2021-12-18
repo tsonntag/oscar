@@ -1,4 +1,4 @@
-# Oscar - ASCII Art Drawning Service
+# Oscar - ASCII Art Drawing Service
 
 Oscar is a web service providing the following drawing operations:
 
