@@ -12,7 +12,7 @@ import Config
 # BEFORE: url: [host: "localhost", port: 4001]
 config :oscar, OscarWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
-  url: [scheme: "https", host: "peaceful-woodland-72582.herokuapp.com", port: 443],
+  url: [scheme: "https", host: "peaceful-woodland-72582.herokuapp.com"],
   force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # Do not print debug messages in production
