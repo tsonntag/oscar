@@ -2,7 +2,7 @@
 
 ### General
 
-I know that my (at least written) English is a mess.
+I know that my English is a mess.
 
 ### Test fixture 1
 
