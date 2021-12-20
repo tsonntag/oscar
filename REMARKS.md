@@ -1,9 +1,5 @@
 ## Remarks
 
-### General
-
-I know that my English is a mess.
-
 ### Test fixture 1
 
 There is an error in the specification:

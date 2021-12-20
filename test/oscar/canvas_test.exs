@@ -85,7 +85,7 @@ defmodule Oscar.CanvasTest do
       valid_attrs = %{"x" => 1, "y" => 0, "fill" => "A" }
       assert {:ok, %Canvas{} = canvas} = Canvas.flood_fill(canvas, valid_attrs)
       assert canvas.content == "AAA\nXXX\nXXX"
-     end
+    end
 
     test "update/2 with valid data updates the canvas" do
       canvas = canvas_fixture()
