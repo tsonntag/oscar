@@ -8,7 +8,7 @@ defmodule Oscar.BoardTest do
       assert Board.new({ 2, 2 }) == [[ " ", " " ], [ " ", " "]]
     end
 
-    test "new/1 returns an board" do
+    test "new/1 with given char returns a board" do
       assert Board.new({ 3, 2 }, "X") == [[ "X", "X", "X"], [ "X", "X", "X"]]
     end
 

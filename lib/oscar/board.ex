@@ -25,7 +25,7 @@ defmodule Oscar.Board do
     iex> new({3, 2}, "X")
     [["X", "X", "X"], ["X", "X", "X"]]
   """
-  def new (%{ width: width, height: height } = args ) do
+  def new(%{ width: width, height: height } = args) do
     fill = Map.get(args, :fill, " ")
     List.duplicate(fill, width) |> List.duplicate(height)
   end
@@ -68,8 +68,6 @@ defmodule Oscar.Board do
   """
   def height(board), do: Enum.count(board)
 
-
-
   @doc """
   Adds a rectangle with parameters x, y, width, height, fill character and outline character to a board
   - x, y denote to upper-left corner
@@ -88,8 +86,8 @@ defmodule Oscar.Board do
     Conveniance function:
     add_rect(x, y, width, height, fill, outline)
   """
-  def add_rect(board, %{ x: x, y: y, width: width, height: height } = params ) do
-    add_rect(board, { x, y }, { width, height }, params[:fill], params[:outline] )
+  def add_rect(board, %{ x: x, y: y, width: width, height: height } = params) do
+    add_rect(board, { x, y }, { width, height }, params[:fill], params[:outline])
   end
 
   def add_rect(board, _corner, _size, _fill, _outline \\ nil)
@@ -153,21 +151,22 @@ defmodule Oscar.Board do
   end
 
   def flood_fill(board, { x, y } = point, char) when x >= 0 and y >= 0 and is_binary(char) do
-    flood(board, point, get_char(board, point), char)
+    do_flood_fill(board, point, get_char(board, point), char)
   end
 
   def flood_fill(board, _point, _char), do: board
 
-  # private
 
-  defp flood(board, point, old_char, new_char, done \\ MapSet.new()) do
+  # private stuff
+
+  defp do_flood_fill(board, point, old_char, new_char, done \\ MapSet.new()) do
     board = board |> set_char(point, new_char)
     done = MapSet.put(done, point)
 
     point
     |> neighbours()
-    |> Enum.filter(fn p -> on_board?(board, p) && get_char(board, p) == old_char  && !MapSet.member?(done, p)end)
-    |> Enum.reduce(board, fn p, board_ -> flood(board_, p, old_char, new_char, done) end)
+    |> Enum.filter(fn p -> on_board?(board, p) && get_char(board, p) == old_char && !MapSet.member?(done, p) end)
+    |> Enum.reduce(board, fn p, board_ -> do_flood_fill(board_, p, old_char, new_char, done) end)
   end
 
   defp set_points(points, board, char) do
@@ -186,7 +185,7 @@ defmodule Oscar.Board do
     List.update_at(board, y, &List.replace_at(&1, x, c))
   end
 
-  defp on_board?(board, { x, y } ) do
+  defp on_board?(board, { x, y }) do
     0 <= x && x < width(board) && 0 <= y && y < height(board)
   end
 

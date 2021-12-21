@@ -30,11 +30,8 @@ defmodule Oscar.Canvas do
 
   schema "canvases" do
     field :content, :string
-
     timestamps()
   end
-
-  def to_content(%Canvas{content: content}), do: Board.to_content(content)
 
   @doc false
   def changeset(canvas, attrs) do
@@ -113,8 +110,6 @@ defmodule Oscar.Canvas do
   @doc """
   Gets a single canvas.
 
-  Raises `Ecto.NoResultsError` if the Canvas does not exist.
-
   ## Examples
 
   iex> get(123)
@@ -155,7 +150,7 @@ defmodule Oscar.Canvas do
 
 
   @doc """
-  Adds rectangle with upper left corner x, y and width and heigth to a canvas.
+  Adds rectangle with upper left corner x, y and width and height to a canvas.
 
   ## Examples
 
