@@ -2,9 +2,8 @@
 
 ### Test fixture 1
 
-There is an error in the specification:
-The rectangle at *[3,2]* should be lower case *x*, but the example shows am upper case *X*
-If used the update case *X*.
+There is an error in the specification: The rectangle at *[3,2]* should be lower
+case *x*, but the example shows am upper case *X* If used the update case *X*.
 
 ### Test fixture 2
 
